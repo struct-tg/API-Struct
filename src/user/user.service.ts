@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserGatewayInterface } from './gateways/user-bd/user-gateway-interface';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import { LogAuth } from './dto/log-auth.dto';
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,20 @@ export class UserService {
     const newUser = await this.userGateway.create(createUserDto)
 
     return newUser
+  }
+
+  async logAuth(logAuth: LogAuth){
+    const user = await this.userGateway.findByEmail(logAuth.email);
+
+    if(!user)
+      throw new BadRequestException(`E-Mail e/ou senha inválidos`);
+
+    const passwordNotCorrect = !bcrypt.compareSync(logAuth.password, user.password)
+
+    if(passwordNotCorrect)
+      throw new BadRequestException(`E-Mail e/ou senha inválidos`);
+
+    return user;
   }
 
   findOne(id: number) {
