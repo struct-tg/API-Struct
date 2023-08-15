@@ -24,7 +24,7 @@ export class UserService {
     if(userExists)
       throw new BadRequestException(`Um usuário com o e-mail informado já foi cadastrado`)
 
-    createUserDto.password = await bcrypt.hashSync(createUserDto.password, 8);
+    createUserDto.password = this.generatePasswordCrypt(createUserDto.password);
 
     const newUser = await this.userGateway.create(createUserDto)
 
@@ -57,8 +57,20 @@ export class UserService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+
+    await this.getOneUser(id);
+
+    if(updateUserDto?.email)
+      delete updateUserDto.email;
+
+    updateUserDto.password = this.generatePasswordCrypt(updateUserDto.password);
+
+    const user = await this.userGateway.update(id, updateUserDto);
+
+    delete user.password;
+
+    return user;
   }
 
   async remove(id: number) {
@@ -73,5 +85,9 @@ export class UserService {
       throw new NotFoundException(`Usuário de id: ${id} não encontrado`)
 
     return user;
+  }
+
+  private generatePasswordCrypt(password: string){
+    return bcrypt.hashSync(password, 8);
   }
 }

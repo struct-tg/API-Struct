@@ -3,6 +3,7 @@ import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { UserGatewayInterface } from "./user-gateway-interface";
 import { User } from "src/user/entities/user.entity";
 import { PrismaService } from "src/prisma/prisma.service";
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 
 @Injectable()
 export class UserGatewayPrisma implements UserGatewayInterface{
@@ -45,5 +46,16 @@ export class UserGatewayPrisma implements UserGatewayInterface{
           id
         }
       })
+    }
+
+    async update(id:number, updateUser: UpdateUserDto): Promise<User>{
+      const userUpdated = await this.prisma.user.update({
+        data: updateUser,
+        where: {
+          id
+        }
+      })
+      
+      return userUpdated;
     }
 }

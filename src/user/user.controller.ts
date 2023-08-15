@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   UseGuards,
@@ -29,26 +29,28 @@ export class UserController {
 
   @Post('/auth')
   auth(@Body() logAuth: LogAuth){
-    return this.userService.logAuth(logAuth)
+    return this.userService.logAuth(logAuth);
   }
 
   @UseGuards(JwtGuard)
   @Get('')
   myAccount(@Req() req: any) {
-    const id = getUserIdByToken(req)
+    const id = getUserIdByToken(req);
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseGuards(JwtGuard)
+  @Put('')
+  update(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
+    const id = getUserIdByToken(req);
+    return this.userService.update(id, updateUserDto);
   }
 
   @UseGuards(JwtGuard)
   @Delete('')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Req() req: any) {
-    const id = getUserIdByToken(req)
+    const id = getUserIdByToken(req);
     return this.userService.remove(id);
   }
 }
