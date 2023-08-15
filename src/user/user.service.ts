@@ -75,7 +75,7 @@ export class UserService {
   }
 
   async remove(id: number) {
-    await this.userGateway.findById(id);
+    await this.getOneUser(id);
     await this.userGateway.delete(id);
   }
 
