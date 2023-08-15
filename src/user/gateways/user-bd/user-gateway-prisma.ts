@@ -38,4 +38,12 @@ export class UserGatewayPrisma implements UserGatewayInterface{
 
       return user;
     }
+
+    async delete(id: number): Promise<void>{
+      await this.prisma.user.delete({
+        where: {
+          id
+        }
+      })
+    }
 }

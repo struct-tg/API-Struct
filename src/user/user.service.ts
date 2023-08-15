@@ -50,9 +50,7 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    const user = await this.userGateway.findById(id);
-
-    this.validateUser(user, id);
+    const user = await this.getOneUser(id);
 
     delete user.password;
 
@@ -63,12 +61,17 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    await this.userGateway.findById(id);
+    await this.userGateway.delete(id);
   }
 
-  private validateUser(user: User, id: number){
+  private async getOneUser(id: number){
+    const user = await this.userGateway.findById(id);
+
     if(!user)
       throw new NotFoundException(`Usuário de id: ${id} não encontrado`)
+
+    return user;
   }
 }

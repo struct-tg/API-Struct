@@ -5,4 +5,5 @@ export interface UserGatewayInterface{
     create(newUser: CreateUserDto): Promise<User>;
     findByEmail(email: string): Promise<User>;
     findById(id: number): Promise<User>;
+    delete(id: number): Promise<void>;
 }

@@ -7,13 +7,16 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req
+  Req,
+  HttpStatus,
+  HttpCode
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LogAuth } from './dto/log-auth.dto';
 import { JwtGuard } from 'src/guards/auth/jwt.guard';
+import { getUserIdByToken } from 'src/utils/getUserByToken';
 
 @Controller('user')
 export class UserController {
@@ -32,7 +35,8 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Get('')
   myAccount(@Req() req: any) {
-    return this.userService.findOne(req.user.id);
+    const id = getUserIdByToken(req)
+    return this.userService.findOne(id);
   }
 
   @Patch(':id')
@@ -40,8 +44,11 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @UseGuards(JwtGuard)
+  @Delete('')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Req() req: any) {
+    const id = getUserIdByToken(req)
+    return this.userService.remove(id);
   }
 }
