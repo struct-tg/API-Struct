@@ -5,6 +5,7 @@ import { UserGatewayInterface } from './gateways/user-bd/user-gateway-interface'
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { LogAuth } from './dto/log-auth.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
@@ -12,6 +13,7 @@ export class UserService {
   constructor(
     @Inject('UserGatewayBD')
     private userGateway: UserGatewayInterface,
+    private jwtService: JwtService
   ){}
 
   async create(createUserDto: CreateUserDto) {
@@ -39,7 +41,11 @@ export class UserService {
     if(passwordNotCorrect)
       throw new BadRequestException(`E-Mail e/ou senha inválidos`);
 
-    return user;
+    const payload = {
+      id: user.id
+    }
+
+    return {token: this.jwtService.sign(payload)}
   }
 
   findOne(id: number) {
