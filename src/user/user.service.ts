@@ -2,7 +2,6 @@ import { BadRequestException, NotFoundException, Inject, Injectable } from '@nes
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserGatewayInterface } from './gateways/user-bd/user-gateway-interface';
-import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { LogAuth } from './dto/log-auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -26,7 +25,9 @@ export class UserService {
 
     createUserDto.password = this.generatePasswordCrypt(createUserDto.password);
 
-    const newUser = await this.userGateway.create(createUserDto)
+    const user = await this.userGateway.create(createUserDto)
+
+    const newUser = new User(user);
 
     return newUser
   }
@@ -52,9 +53,9 @@ export class UserService {
   async findOne(id: number) {
     const user = await this.getOneUser(id);
 
-    delete user.password;
+    const userFinded = new User(user);
 
-    return user;
+    return userFinded;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -66,11 +67,11 @@ export class UserService {
 
     updateUserDto.password = this.generatePasswordCrypt(updateUserDto.password);
 
-    const user = await this.userGateway.update(id, updateUserDto);
+    const user = await this.userGateway.update(id, updateUserDto)
 
-    delete user.password;
+    const userUpdated = new User(user);
 
-    return user;
+    return userUpdated;
   }
 
   async remove(id: number) {

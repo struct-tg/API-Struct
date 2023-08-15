@@ -9,7 +9,9 @@ import {
   UseGuards,
   Req,
   HttpStatus,
-  HttpCode
+  HttpCode,
+  UseInterceptors,
+  ClassSerializerInterceptor
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +25,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -34,6 +37,7 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Get('')
+  @UseInterceptors(ClassSerializerInterceptor)
   myAccount(@Req() req: any) {
     const id = getUserIdByToken(req);
     return this.userService.findOne(id);
@@ -41,6 +45,7 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Put('')
+  @UseInterceptors(ClassSerializerInterceptor)
   update(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
     const id = getUserIdByToken(req);
     return this.userService.update(id, updateUserDto);
