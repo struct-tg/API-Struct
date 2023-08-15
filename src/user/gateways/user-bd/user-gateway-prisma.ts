@@ -8,24 +8,34 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class UserGatewayPrisma implements UserGatewayInterface{
 
     constructor(
-        private prisma: PrismaService
+      private prisma: PrismaService
     ){}
 
     async create(newUser: CreateUserDto): Promise<User>{
-        const userCreated = await this.prisma.user.create({
-            data: newUser
-          });
+      const userCreated = await this.prisma.user.create({
+          data: newUser
+        });
 
-        return userCreated
+      return userCreated
     }
 
     async findByEmail(email: string): Promise<User>{
-        const userExists = await this.prisma.user.findUnique({
-            where: {
-              email
-            }
-          })
+      const userExists = await this.prisma.user.findUnique({
+          where: {
+            email
+          }
+        })
 
-        return userExists;
+      return userExists;
+    }
+
+    async findById(id: number): Promise<User> {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id
+        }
+      })
+
+      return user;
     }
 }

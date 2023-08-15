@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, NotFoundException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserGatewayInterface } from './gateways/user-bd/user-gateway-interface';
@@ -6,6 +6,7 @@ import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { LogAuth } from './dto/log-auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -48,8 +49,14 @@ export class UserService {
     return {token: this.jwtService.sign(payload)}
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.userGateway.findById(id);
+
+    this.validateUser(user, id);
+
+    delete user.password;
+
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -58,5 +65,10 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  private validateUser(user: User, id: number){
+    if(!user)
+      throw new NotFoundException(`Usuário de id: ${id} não encontrado`)
   }
 }
