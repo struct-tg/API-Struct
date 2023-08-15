@@ -5,12 +5,14 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { UserGatewayPrisma } from './gateways/user-bd/user-gateway-prisma';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from 'src/configs';
-import { JwtStrategyService } from './jwt-strategy.service';
+// import { JwtStrategyService } from './jwt-strategy.service';
+import { AuthModule } from 'src/guards/auth/auth.module';
 
 @Module({
   imports: [
     PrismaModule,
     JwtModule.register(jwtConfig),
+    AuthModule
   ],
   controllers: [UserController],
   providers: [
@@ -19,8 +21,7 @@ import { JwtStrategyService } from './jwt-strategy.service';
     {
       provide: 'UserGatewayBD',
       useExisting:  UserGatewayPrisma
-    },
-    JwtStrategyService
+    }
   ],
 })
 export class UserModule {}
