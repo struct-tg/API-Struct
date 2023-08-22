@@ -1,15 +1,23 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskGatewayInterface } from './gateways/task-bd/task-gateway-interface';
 
 @Injectable()
 export class TaskService {
-
+  constructor(
+    @Inject("TaskGatewayBD")
+    private taskGateway: TaskGatewayInterface
+  ){}
   
-  create(createTaskDto: CreateTaskDto) {
+  async create(createTaskDto: CreateTaskDto) {
 
+    createTaskDto.dateStart = new Date(createTaskDto.dateStart);
+    createTaskDto.dateWishEnd = new Date(createTaskDto.dateWishEnd)
 
-    return 'This action adds a new task';
+    const taskCreated = this.taskGateway.create(createTaskDto);
+
+    return taskCreated;
   }
 
   findAll() {

@@ -1,4 +1,5 @@
-import { IsDate, IsNotEmpty, IsNumber, IsString, MinLength } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsString, MinLength } from "class-validator";
 
 export class CreateTaskDto {
 
@@ -13,11 +14,11 @@ export class CreateTaskDto {
     description: string;
 
     @IsNotEmpty({message: `dateStart não pode ser vazio`})
-    @IsDate({message: `dateStart deve ser uma data válida`})
+    @IsDateString({}, {message: `dateStart deve ser uma data válida`})
     dateStart: Date;
 
-    @IsNotEmpty({message: `dateStart não pode ser vazio`})
-    @IsDate({message: `dateStart deve ser uma data válida`})
+    @IsNotEmpty({message: `dateWishEnd não pode ser vazio`})
+    @IsDateString({}, {message: `dateWishEnd deve ser uma data válida`})
     dateWishEnd: Date;
 
     @IsNotEmpty({message: `userId não pode ser vazio`})
