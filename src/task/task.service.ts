@@ -20,8 +20,8 @@ export class TaskService {
     return taskCreated;
   }
 
-  findAll() {
-    return `This action returns all task`;
+  async findAll(idUser: number) {
+    return this.taskGateway.findAll(idUser);
   }
 
   findOne(id: number) {

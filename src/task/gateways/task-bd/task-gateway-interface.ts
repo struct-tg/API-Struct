@@ -3,4 +3,5 @@ import { Task } from "src/task/entities/task.entity";
 
 export interface TaskGatewayInterface{
     create(createTaskDto: CreateTaskDto): Promise<Task>;
+    findAll(indUser: number): Promise<Task[]>;
 }
