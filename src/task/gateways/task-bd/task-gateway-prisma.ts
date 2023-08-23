@@ -29,4 +29,14 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
 
         return taskList;
     }
+
+    async findById(id: number): Promise<Task> {
+        const task = await this.prisma.task.findUnique({
+          where: {
+            id
+          }
+        })
+  
+        return task;
+      }
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskGatewayInterface } from './gateways/task-bd/task-gateway-interface';
@@ -21,11 +21,17 @@ export class TaskService {
   }
 
   async findAll(idUser: number) {
-    return this.taskGateway.findAll(idUser);
+    return await this.taskGateway.findAll(idUser);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: number) {
+    
+    const task = await this.taskGateway.findById(id)    
+
+    if(!task)
+      throw new NotFoundException(`task de id ${id} não encontrado`)
+
+    return task
   }
 
   update(id: number, updateTaskDto: UpdateTaskDto) {
