@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, ParseIntPipe, NotAcceptableException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Req, UseGuards, ParseIntPipe, NotAcceptableException } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -26,14 +26,14 @@ export class TaskController {
 
   @UseGuards(JwtGuard)
   @Get(':id')
-  findOne(@Param('id', new ParseIntPipe({errorHttpStatusCode: 406, exceptionFactory: () => 
+  findOne(@Param('id', new ParseIntPipe({exceptionFactory: () => 
     new NotAcceptableException(`O id tem que ser numérico`)
   })) id: number) {
     return this.taskService.findOne(id); 
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+  @Put(':id')
+  update(@Param('id', new ParseIntPipe({exceptionFactory: () => new NotAcceptableException(`O id tem que ser numérico`)})) id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.taskService.update(+id, updateTaskDto);
   }
 
