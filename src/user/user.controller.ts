@@ -18,7 +18,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LogAuth } from './dto/log-auth.dto';
 import { JwtGuard } from 'src/guards/auth/jwt.guard';
-import { getUserIdByToken } from 'src/utils/getUserByToken';
 
 @Controller('user')
 export class UserController {
@@ -39,23 +38,20 @@ export class UserController {
   @Get('')
   @UseInterceptors(ClassSerializerInterceptor)
   myAccount(@Req() req: any) {
-    const id = getUserIdByToken(req);
-    return this.userService.findOne(id);
+    return this.userService.findOne(req.user.id);
   }
 
   @UseGuards(JwtGuard)
   @Put('')
   @UseInterceptors(ClassSerializerInterceptor)
   update(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
-    const id = getUserIdByToken(req);
-    return this.userService.update(id, updateUserDto);
+    return this.userService.update(req.user.id, updateUserDto);
   }
 
   @UseGuards(JwtGuard)
   @Delete('')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Req() req: any) {
-    const id = getUserIdByToken(req);
-    return this.userService.remove(id);
+    return this.userService.remove(req.user.id);
   }
 }
