@@ -14,8 +14,12 @@ export class TaskService {
   
   async create(idUserLog: number, createTaskDto: CreateTaskDto) {
 
+    const now = moment(new Date().toDateString()).startOf('day');
     const dateStart = moment(createTaskDto.dateStart.toString()).startOf('day');
     const dateWishEnd = moment(createTaskDto.dateWishEnd.toString()).startOf('day');
+
+    if(now.isAfter(dateStart))
+      throw new BadRequestException(`Data início não pode ser inferior a data atual`);
 
     if(dateStart.isAfter(dateWishEnd))
       throw new BadRequestException(`Data início não pode ser superior a data de previsão de término da tarefa`);
