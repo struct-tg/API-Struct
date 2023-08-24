@@ -37,11 +37,11 @@ export class TaskService {
     return await this.taskGateway.findAll(idUser);
   }
 
-  async findOne(id: number) {
+  async findOne(idUserLog: number, id: number) {
     
     const task = await this.taskGateway.findById(id)    
 
-    if(!task)
+    if(!task || task.userId !== idUserLog)
       throw new NotFoundException(`task de id ${id} não encontrado`)
 
     return task

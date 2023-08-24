@@ -29,10 +29,12 @@ export class TaskController {
 
   @UseGuards(JwtGuard)
   @Get(':id')
-  findOne(@Param('id', new ParseIntPipe({exceptionFactory: () => 
+  findOne(
+    @Req() req: any,
+    @Param('id', new ParseIntPipe({exceptionFactory: () => 
     new NotAcceptableException(`O id tem que ser numérico`)
   })) id: number) {
-    return this.taskService.findOne(id); 
+    return this.taskService.findOne(req.user.id, id); 
   }
 
   @Put(':id')
