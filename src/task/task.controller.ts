@@ -11,8 +11,11 @@ export class TaskController {
 
   @UseGuards(JwtGuard)
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  create(
+    @Req() req: any,
+    @Body() createTaskDto: CreateTaskDto
+  ) {
+    return this.taskService.create(req.user.id, createTaskDto);
   }
 
   @UseGuards(JwtGuard)

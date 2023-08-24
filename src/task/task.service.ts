@@ -1,7 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, ForbiddenException,forwardRef } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskGatewayInterface } from './gateways/task-bd/task-gateway-interface';
+import { UserService } from 'src/user/user.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class TaskService {
@@ -10,10 +12,17 @@ export class TaskService {
     private taskGateway: TaskGatewayInterface
   ){}
   
-  async create(createTaskDto: CreateTaskDto) {
+  async create(idUserLog: number, createTaskDto: CreateTaskDto) {
+
+    const dateStart = moment(createTaskDto.dateStart.toString()).startOf('day');
+    const dateWishEnd = moment(createTaskDto.dateWishEnd.toString()).startOf('day');
+
+    if(dateStart.isAfter(dateWishEnd))
+      throw new BadRequestException(`Data início não pode ser superior a data de previsão de término da tarefa`);
 
     createTaskDto.dateStart = new Date(createTaskDto.dateStart);
     createTaskDto.dateWishEnd = new Date(createTaskDto.dateWishEnd)
+    createTaskDto.userId = idUserLog
 
     const taskCreated = this.taskGateway.create(createTaskDto);
 

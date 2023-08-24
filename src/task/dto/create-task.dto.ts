@@ -21,7 +21,5 @@ export class CreateTaskDto {
     @IsDateString({}, {message: `dateWishEnd deve ser uma data válida`})
     dateWishEnd: Date;
 
-    @IsNotEmpty({message: `userId não pode ser vazio`})
-    @IsNumber({}, {message: `userId deve ser um número`})
     userId: number;
 }
