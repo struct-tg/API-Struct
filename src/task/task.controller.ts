@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Req, UseGuards, ParseI
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { getUserIdByToken } from 'src/utils/getUserByToken';
 import { JwtGuard } from 'src/guards/auth/jwt.guard';
 
 @Controller('task')
@@ -23,8 +22,7 @@ export class TaskController {
   findAll(
     @Req() req: any
   ) {
-    const idUser = getUserIdByToken(req);
-    return this.taskService.findAll(idUser);
+    return this.taskService.findAll(req.user.id);
   }
 
   @UseGuards(JwtGuard)
