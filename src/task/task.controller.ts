@@ -35,6 +35,7 @@ export class TaskController {
     return this.taskService.findOne(req.user.id, id); 
   }
 
+  @UseGuards(JwtGuard)
   @Put(':id')
   update(
     @Req() req: any,

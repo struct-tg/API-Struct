@@ -4,6 +4,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { CreateTaskDto } from "src/task/dto/create-task.dto";
 import { Task } from "src/task/entities/task.entity";
 import { TaskController } from "src/task/task.controller";
+import { UpdateTaskDto } from "src/task/dto/update-task.dto";
 
 @Injectable()
 export class TaskGatewayPrisma implements TaskGatewayInterface{
@@ -38,5 +39,16 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         })
   
         return task;
-      }
+    }
+
+    async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task>{
+        const task = await this.prisma.task.update({
+            data: updateTaskDto,
+            where: {
+                id
+            }
+        })
+
+        return task;
+    }
 }

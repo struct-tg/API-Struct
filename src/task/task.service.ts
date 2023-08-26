@@ -39,10 +39,19 @@ export class TaskService {
     return task
   }
 
-  update(idUser: number, idTask: number, updateTaskDto: UpdateTaskDto) {
+  async update(idUserLog: number, id: number, updateTaskDto: UpdateTaskDto) {
+  
+    await this.findOne(idUserLog, id);
+    
+    this.validateDate(updateTaskDto.dateStart, updateTaskDto.dateWishEnd);
 
+    updateTaskDto.dateStart = new Date(updateTaskDto.dateStart);
+    updateTaskDto.dateWishEnd = new Date(updateTaskDto.dateWishEnd)
+    updateTaskDto.userId = idUserLog
 
-    return `This action updates a #${idUser} task`;
+    const taskUpdated = await this.taskGateway.update(id, updateTaskDto);
+
+    return taskUpdated;
   }
 
   remove(id: number) {
