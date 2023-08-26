@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Put,
+  Patch,
   Param,
   Delete,
   Req,
@@ -65,6 +66,23 @@ export class TaskController {
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
     return this.taskService.update(req.user.id, idTask, updateTaskDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('onoff/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  onOff(
+    @Req() req: any,
+    @Param(
+      'id',
+      new ParseIntPipe({
+        exceptionFactory: () =>
+          new NotAcceptableException(`O id tem que ser numérico`),
+      }),
+    )
+    idTask: number
+  ) {
+    return this.taskService.onoff(req.user.id, idTask);
   }
 
   @UseGuards(JwtGuard)

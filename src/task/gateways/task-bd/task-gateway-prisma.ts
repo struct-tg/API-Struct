@@ -52,6 +52,17 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return task;
     }
 
+    async onOff(id: number, dateEnd: Date): Promise<void>{
+        await this.prisma.task.update({
+            data: {
+                dateEnd
+            },
+            where: {
+                id
+            }
+        })
+    }
+
     async remove(id: number): Promise<void>{
         await this.prisma.task.delete({
             where: {
