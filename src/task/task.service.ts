@@ -59,10 +59,11 @@ export class TaskService {
   }
 
   private validateDate(dateStartInput: Date, dateWishEndInput: Date){
-    const now = moment(new Date().toDateString()).startOf('day');
-    const dateStart = moment(dateStartInput.toString()).startOf('day');
-    const dateWishEnd = moment(dateWishEndInput.toString()).startOf('day');
-
+    
+    const now = moment(new Date()).startOf('day');
+    const dateStart = moment(dateStartInput).startOf('day');
+    const dateWishEnd = moment(dateWishEndInput).startOf('day');
+    
     if(now.isAfter(dateStart))
       throw new BadRequestException(`Data início não pode ser inferior a data atual`);
 
