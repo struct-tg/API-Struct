@@ -36,8 +36,12 @@ export class TaskController {
   }
 
   @Put(':id')
-  update(@Param('id', new ParseIntPipe({exceptionFactory: () => new NotAcceptableException(`O id tem que ser numérico`)})) id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+  update(
+    @Req() req: any,
+    @Param('id', new ParseIntPipe({exceptionFactory: () => new NotAcceptableException(`O id tem que ser numérico`)})) idTask: number,
+    @Body() updateTaskDto: UpdateTaskDto
+    ) {
+    return this.taskService.update(req.user.id, idTask, updateTaskDto);
   }
 
   @Delete(':id')

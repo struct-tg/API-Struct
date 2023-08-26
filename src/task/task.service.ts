@@ -14,15 +14,7 @@ export class TaskService {
   
   async create(idUserLog: number, createTaskDto: CreateTaskDto) {
 
-    const now = moment(new Date().toDateString()).startOf('day');
-    const dateStart = moment(createTaskDto.dateStart.toString()).startOf('day');
-    const dateWishEnd = moment(createTaskDto.dateWishEnd.toString()).startOf('day');
-
-    if(now.isAfter(dateStart))
-      throw new BadRequestException(`Data início não pode ser inferior a data atual`);
-
-    if(dateStart.isAfter(dateWishEnd))
-      throw new BadRequestException(`Data início não pode ser superior a data de previsão de término da tarefa`);
+    this.validateDate(createTaskDto.dateStart, createTaskDto.dateWishEnd);
 
     createTaskDto.dateStart = new Date(createTaskDto.dateStart);
     createTaskDto.dateWishEnd = new Date(createTaskDto.dateWishEnd)
@@ -47,11 +39,25 @@ export class TaskService {
     return task
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  update(idUser: number, idTask: number, updateTaskDto: UpdateTaskDto) {
+
+
+    return `This action updates a #${idUser} task`;
   }
 
   remove(id: number) {
     return `This action removes a #${id} task`;
+  }
+
+  private validateDate(dateStartInput: Date, dateWishEndInput: Date){
+    const now = moment(new Date().toDateString()).startOf('day');
+    const dateStart = moment(dateStartInput.toString()).startOf('day');
+    const dateWishEnd = moment(dateWishEndInput.toString()).startOf('day');
+
+    if(now.isAfter(dateStart))
+      throw new BadRequestException(`Data início não pode ser inferior a data atual`);
+
+    if(dateStart.isAfter(dateWishEnd))
+      throw new BadRequestException(`Data início não pode ser superior a data de previsão de término da tarefa`);
   }
 }
