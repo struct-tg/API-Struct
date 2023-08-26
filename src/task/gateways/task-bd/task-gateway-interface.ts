@@ -7,4 +7,5 @@ export interface TaskGatewayInterface{
     findAll(indUser: number): Promise<Task[]>;
     findById(id: number): Promise<Task>; 
     update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task>; 
+    remove(id: number): Promise<void>;
 }

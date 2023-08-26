@@ -11,7 +11,7 @@ import {
   HttpStatus,
   HttpCode,
   UseInterceptors,
-  ClassSerializerInterceptor
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -30,7 +30,7 @@ export class UserController {
   }
 
   @Post('/auth')
-  auth(@Body() logAuth: LogAuth){
+  auth(@Body() logAuth: LogAuth) {
     return this.userService.logAuth(logAuth);
   }
 

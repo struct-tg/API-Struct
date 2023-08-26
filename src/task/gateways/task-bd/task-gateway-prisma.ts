@@ -51,4 +51,12 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
 
         return task;
     }
+
+    async remove(id: number): Promise<void>{
+        await this.prisma.task.delete({
+            where: {
+                id
+            }
+        })
+    }
 }

@@ -54,8 +54,10 @@ export class TaskService {
     return taskUpdated;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(idUserLog: number, id: number) {
+    await this.findOne(idUserLog, id);
+
+    await this.taskGateway.remove(id);
   }
 
   private validateDate(dateStartInput: Date, dateWishEndInput: Date){
