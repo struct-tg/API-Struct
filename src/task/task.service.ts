@@ -41,8 +41,11 @@ export class TaskService {
 
   async update(idUserLog: number, id: number, updateTaskDto: UpdateTaskDto) {
   
-    await this.findOne(idUserLog, id);
+    const task = await this.findOne(idUserLog, id);
     
+    if(task.dateEnd)
+      throw new ForbiddenException(`Essa tarefa já foi finalizada`);
+
     this.validateDate(updateTaskDto.dateStart, updateTaskDto.dateWishEnd);
 
     updateTaskDto.dateStart = new Date(updateTaskDto.dateStart);
