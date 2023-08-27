@@ -21,6 +21,16 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskCreated;
     }
 
+    async count(idUser: number): Promise<number>{
+        const count = await this.prisma.task.count({
+            where: {
+                userId: idUser
+            }
+        })
+
+        return count
+    }
+
     async findAll(idUser: number): Promise<Task[]> {
         const taskList = await this.prisma.task.findMany({
             where: {

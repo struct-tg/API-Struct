@@ -4,6 +4,8 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskGatewayInterface } from './gateways/task-bd/task-gateway-interface';
 import { UserService } from 'src/user/user.service';
 import * as moment from 'moment';
+import { Task } from './entities/task.entity';
+import { generatePagination } from 'src/utils/pagination';
 
 @Injectable()
 export class TaskService {
@@ -35,10 +37,16 @@ export class TaskService {
       if(limit < 1)
         throw new BadRequestException(`O limit deve ser um número positivo`)
 
-      return await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit);
+      const count = await this.taskGateway.count(idUser);
+      const data = await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit);
+      
+      return generatePagination<Task>(data, page, limit, count);
     }
-    else
-      return await this.taskGateway.findAll(idUser);
+    else{
+      const data = await this.taskGateway.findAll(idUser);
+
+      return generatePagination<Task>(data, 1, data.length, data.length);
+    }
   }
 
   async findOne(idUserLog: number, id: number) {
