@@ -13,6 +13,7 @@ import {
   NotAcceptableException,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -31,8 +32,28 @@ export class TaskController {
 
   @UseGuards(JwtGuard)
   @Get()
-  findAll(@Req() req: any) {
-    return this.taskService.findAll(req.user.id);
+  findAll(
+    @Req() req: any,
+    @Query(
+      'page',
+      new ParseIntPipe({
+        exceptionFactory: () =>
+          new NotAcceptableException(`O page tem que ser numérico`),
+        optional: true
+      }),
+    )
+    page?: number,
+    @Query(
+      'limit',
+      new ParseIntPipe({
+        exceptionFactory: () =>
+          new NotAcceptableException(`O limit tem que ser numérico`),
+        optional: true
+      }),
+    )
+    limit?: number
+  ) {
+    return this.taskService.findAll(req.user.id, page, limit);
   }
 
   @UseGuards(JwtGuard)
@@ -80,7 +101,7 @@ export class TaskController {
           new NotAcceptableException(`O id tem que ser numérico`),
       }),
     )
-    idTask: number
+    idTask: number,
   ) {
     return this.taskService.onoff(req.user.id, idTask);
   }

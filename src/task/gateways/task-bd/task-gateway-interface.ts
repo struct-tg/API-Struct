@@ -4,7 +4,8 @@ import { Task } from "src/task/entities/task.entity";
 
 export interface TaskGatewayInterface{
     create(createTaskDto: CreateTaskDto): Promise<Task>;
-    findAll(indUser: number): Promise<Task[]>;
+    findAll(idUser: number): Promise<Task[]>;
+    findAllWithPagination(idUser: number, page: number, limit: number): Promise<Task[]>;
     findById(id: number): Promise<Task>; 
     update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task>; 
     onOff(id: number, dateEnd: Date): Promise<void>; 

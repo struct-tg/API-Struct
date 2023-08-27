@@ -31,6 +31,18 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskList;
     }
 
+    async findAllWithPagination(idUser: number, page: number, limit: number): Promise<Task[]>{
+        const taskList = await this.prisma.task.findMany({
+            where: {
+                userId: idUser
+            },
+            skip: page * limit,
+            take: limit
+        })
+
+        return taskList;
+    }
+
     async findById(id: number): Promise<Task> {
         const task = await this.prisma.task.findUnique({
           where: {

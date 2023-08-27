@@ -25,8 +25,20 @@ export class TaskService {
     return taskCreated;
   }
 
-  async findAll(idUser: number) {
-    return await this.taskGateway.findAll(idUser);
+  async findAll(idUser: number, page?: number, limit?: number) {
+    
+    if(typeof(page) === 'number' && typeof(limit) === 'number' ){
+
+      if(page < 1)
+        throw new BadRequestException(`O page deve ser um número positivo`)
+
+      if(limit < 1)
+        throw new BadRequestException(`O limit deve ser um número positivo`)
+
+      return await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit);
+    }
+    else
+      return await this.taskGateway.findAll(idUser);
   }
 
   async findOne(idUserLog: number, id: number) {
