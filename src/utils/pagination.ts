@@ -1,10 +1,13 @@
-export function generatePagination<T>(data: T[], page: number, limit: number, total: number){
-   return {
-    data,
-    pagination: {
-        page,
-        limit,
-        total
+export class Pagination<T>{
+    data: T[];
+    page: number;
+    limit: number;
+    total: number
+
+    constructor(data: T[], page: number, limit: number, total: number){
+        this.data = data;
+        this.page = page;
+        this.limit = limit;
+        this.total = total;
     }
-   }
 }

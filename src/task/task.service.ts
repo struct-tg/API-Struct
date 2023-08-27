@@ -5,7 +5,7 @@ import { TaskGatewayInterface } from './gateways/task-bd/task-gateway-interface'
 import { UserService } from 'src/user/user.service';
 import * as moment from 'moment';
 import { Task } from './entities/task.entity';
-import { generatePagination } from 'src/utils/pagination';
+import { Pagination } from 'src/utils/pagination';
 
 @Injectable()
 export class TaskService {
@@ -40,12 +40,12 @@ export class TaskService {
       const count = await this.taskGateway.count(idUser);
       const data = await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit);
       
-      return generatePagination<Task>(data, page, limit, count);
+      return new Pagination<Task>(data, page, limit, count);
     }
     else{
       const data = await this.taskGateway.findAll(idUser);
 
-      return generatePagination<Task>(data, 1, data.length, data.length);
+      return new Pagination<Task>(data, 1, data.length, data.length);
     }
   }
 
