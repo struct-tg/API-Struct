@@ -33,10 +33,14 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return count
     }
 
-    async findAll(idUser: number): Promise<Task[]> {
+    async findAll(idUser: number, status: string): Promise<Task[]> {
+
+        const filter = this.genereateFilter(idUser, status);
+
         const taskList = await this.prisma.task.findMany({
-            where: {
-                userId: idUser
+            where: filter,
+            orderBy: {
+                dateWishEnd: "desc"
             }
         })
 
@@ -49,6 +53,9 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
 
         const taskList = await this.prisma.task.findMany({
             where: filter,
+            orderBy: {
+                dateWishEnd: "desc"
+            },
             skip: page * limit,
             take: limit
         })

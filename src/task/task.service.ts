@@ -43,7 +43,7 @@ export class TaskService {
       return new Pagination<Task>(data, page, limit, count);
     }
     else{
-      const data = await this.taskGateway.findAll(idUser);
+      const data = await this.taskGateway.findAll(idUser, status);
 
       return new Pagination<Task>(data, 1, data.length, data.length);
     }
