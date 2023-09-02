@@ -22,9 +22,9 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskCreated;
     }
 
-    async count(idUser: number, status: string): Promise<number>{
+    async count(idUser: number, status: string, partialName: string): Promise<number>{
 
-        const filter = this.genereateFilter(idUser, status);
+        const filter = this.genereateFilter(idUser, status, partialName);
 
         const count = await this.prisma.task.count({
             where: filter
@@ -33,9 +33,9 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return count
     }
 
-    async findAll(idUser: number, status: string): Promise<Task[]> {
+    async findAll(idUser: number, status: string, partialName: string): Promise<Task[]> {
 
-        const filter = this.genereateFilter(idUser, status);
+        const filter = this.genereateFilter(idUser, status, partialName);
 
         const taskList = await this.prisma.task.findMany({
             where: filter,
@@ -47,10 +47,10 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskList;
     }
 
-    async findAllWithPagination(idUser: number, page: number, limit: number, status: string): Promise<Task[]>{
+    async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string): Promise<Task[]>{
     
-        const filter = this.genereateFilter(idUser, status);
-
+        const filter = this.genereateFilter(idUser, status, partialName);
+        
         const taskList = await this.prisma.task.findMany({
             where: filter,
             orderBy: {
@@ -103,7 +103,7 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         })
     }
 
-    private genereateFilter(idUser: number, status?: string){
+    private genereateFilter(idUser: number, status?: string, partialName?: string){
         let filter: any = {}
         filter = { userId: idUser}
         
@@ -130,6 +130,14 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
                 break;
             default:
                 break;
+        }
+
+        if(partialName){
+            Object.assign(filter, {
+                name: {
+                    contains: partialName
+                  }
+            })
         }
         
         return filter;

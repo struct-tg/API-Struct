@@ -62,9 +62,11 @@ export class TaskController {
         optional: true
       })
     )
-    status?: TaskStatus
+    status?: TaskStatus,
+    @Query('partialName')
+    partialName?: string
   ) {
-    return this.taskService.findAll(req.user.id, page, limit, status);
+    return this.taskService.findAll(req.user.id, page, limit, status, partialName);
   }
 
   @UseGuards(JwtGuard)
