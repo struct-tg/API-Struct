@@ -33,29 +33,27 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return count
     }
 
-    async findAll(idUser: number, status: string, partialName: string): Promise<Task[]> {
+    async findAll(idUser: number, status: string, partialName: string, ascend: boolean): Promise<Task[]> {
 
         const filter = this.genereateFilter(idUser, status, partialName);
+        const order = this.generateOrder(ascend);
 
         const taskList = await this.prisma.task.findMany({
             where: filter,
-            orderBy: {
-                dateWishEnd: "desc"
-            }
+            orderBy: order
         })
 
         return taskList;
     }
 
-    async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string): Promise<Task[]>{
+    async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, ascend: boolean): Promise<Task[]>{
     
-        const filter = this.genereateFilter(idUser, status, partialName);
-        
+        const filter = this.genereateFilter(idUser, status, partialName);    
+        const order = this.generateOrder(ascend);
+
         const taskList = await this.prisma.task.findMany({
             where: filter,
-            orderBy: {
-                dateWishEnd: "desc"
-            },
+            orderBy: order,
             skip: page * limit,
             take: limit
         })
@@ -141,5 +139,19 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         }
         
         return filter;
+    }
+
+    private generateOrder(ascend: boolean){
+        const order = ascend ? "asc" : "desc";
+        const orderList: any[] = [
+            {
+                dateWishEnd: order
+            },
+            {
+                name: "asc"
+            }
+        ]
+
+        return orderList;
     }
 }

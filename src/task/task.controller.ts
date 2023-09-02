@@ -15,6 +15,7 @@ import {
   HttpStatus,
   Query,
   ParseEnumPipe,
+  ParseBoolPipe
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -64,9 +65,18 @@ export class TaskController {
     )
     status?: TaskStatus,
     @Query('partialName')
-    partialName?: string
+    partialName?: string,
+    @Query(
+      'orderAscend',
+      new ParseBoolPipe({
+        exceptionFactory: () =>
+          new NotAcceptableException(`A ordenação ascendente (antigo para o recente) deve ser um booleano. Se false será descendente (do recente para o antigo)`),
+        optional: true
+      })
+    )
+    ascend?: boolean
   ) {
-    return this.taskService.findAll(req.user.id, page, limit, status, partialName);
+    return this.taskService.findAll(req.user.id, page, limit, status, partialName, ascend);
   }
 
   @UseGuards(JwtGuard)

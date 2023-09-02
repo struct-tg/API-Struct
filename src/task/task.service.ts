@@ -27,7 +27,7 @@ export class TaskService {
     return taskCreated;
   }
 
-  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string) {
+  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, ascend = false) {
     
     if(typeof(page) === 'number' && typeof(limit) === 'number' ){
 
@@ -38,12 +38,12 @@ export class TaskService {
         throw new BadRequestException(`O limit deve ser um número positivo`)
 
       const count = await this.taskGateway.count(idUser, status, partialName);
-      const data = await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName);
+      const data = await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, ascend);
       
       return new Pagination<Task>(data, page, limit, count);
     }
     else{
-      const data = await this.taskGateway.findAll(idUser, status, partialName);
+      const data = await this.taskGateway.findAll(idUser, status, partialName, ascend);
 
       return new Pagination<Task>(data, 1, data.length, data.length);
     }
