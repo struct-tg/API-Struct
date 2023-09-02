@@ -14,11 +14,13 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  ParseEnumPipe,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtGuard } from 'src/guards/auth/jwt.guard';
+import { TaskStatus } from './enums/task-filter-status';
 
 @Controller('task')
 export class TaskController {
@@ -51,9 +53,18 @@ export class TaskController {
         optional: true
       }),
     )
-    limit?: number
+    limit?: number,
+    @Query(
+      'status',
+      new ParseEnumPipe(TaskStatus, {
+        exceptionFactory: () =>
+          new NotAcceptableException(`Status do filtro inválido`),
+        optional: true
+      })
+    )
+    status?: TaskStatus
   ) {
-    return this.taskService.findAll(req.user.id, page, limit);
+    return this.taskService.findAll(req.user.id, page, limit, status);
   }
 
   @UseGuards(JwtGuard)

@@ -5,6 +5,7 @@ import { CreateTaskDto } from "src/task/dto/create-task.dto";
 import { Task } from "src/task/entities/task.entity";
 import { TaskController } from "src/task/task.controller";
 import { UpdateTaskDto } from "src/task/dto/update-task.dto";
+import { TaskStatus } from "src/task/enums/task-filter-status";
 
 @Injectable()
 export class TaskGatewayPrisma implements TaskGatewayInterface{
@@ -21,11 +22,12 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskCreated;
     }
 
-    async count(idUser: number): Promise<number>{
+    async count(idUser: number, status: string): Promise<number>{
+
+        const filter = this.genereateFilter(idUser, status);
+
         const count = await this.prisma.task.count({
-            where: {
-                userId: idUser
-            }
+            where: filter
         })
 
         return count
@@ -41,11 +43,12 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskList;
     }
 
-    async findAllWithPagination(idUser: number, page: number, limit: number): Promise<Task[]>{
+    async findAllWithPagination(idUser: number, page: number, limit: number, status: string): Promise<Task[]>{
+    
+        const filter = this.genereateFilter(idUser, status);
+
         const taskList = await this.prisma.task.findMany({
-            where: {
-                userId: idUser
-            },
+            where: filter,
             skip: page * limit,
             take: limit
         })
@@ -91,5 +94,37 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
                 id
             }
         })
+    }
+
+    private genereateFilter(idUser: number, status?: string){
+        let filter: any = {}
+        filter = { userId: idUser}
+        
+        const now = new Date();
+        now.setUTCHours(0, 0, 0, 0);
+
+        switch(status){
+            case TaskStatus.CONCLUIDO:
+                Object.assign(filter, {NOT: {
+                    dateEnd: null,
+                  }})
+                break;
+            case TaskStatus.NAO_CONCLUIDO:
+                Object.assign(filter, {dateEnd: null,
+                    dateWishEnd: {
+                        gte: now
+                    }})
+                break;
+            case TaskStatus.ATRASADO:
+                Object.assign(filter, {dateEnd: null,
+                    dateWishEnd: {
+                        lt: now
+                    }})
+                break;
+            default:
+                break;
+        }
+        
+        return filter;
     }
 }
