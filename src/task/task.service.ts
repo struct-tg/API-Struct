@@ -16,9 +16,8 @@ export class TaskService {
   
   async create(idUserLog: number, createTaskDto: CreateTaskDto) {
 
-    this.validateDate(createTaskDto.dateStart, createTaskDto.dateWishEnd);
+    this.validateDate(createTaskDto.dateWishEnd);
 
-    createTaskDto.dateStart = new Date(createTaskDto.dateStart);
     createTaskDto.dateWishEnd = new Date(createTaskDto.dateWishEnd)
     createTaskDto.userId = idUserLog
 
@@ -66,9 +65,8 @@ export class TaskService {
     if(task.dateEnd)
       throw new ForbiddenException(`Essa tarefa já foi finalizada`);
 
-    this.validateDate(updateTaskDto.dateStart, updateTaskDto.dateWishEnd);
+    this.validateDate(updateTaskDto.dateWishEnd);
 
-    updateTaskDto.dateStart = new Date(updateTaskDto.dateStart);
     updateTaskDto.dateWishEnd = new Date(updateTaskDto.dateWishEnd)
     updateTaskDto.userId = idUserLog
 
@@ -91,16 +89,13 @@ export class TaskService {
     await this.taskGateway.remove(id);
   }
 
-  private validateDate(dateStartInput: Date, dateWishEndInput: Date){
+  private validateDate(dateWishEndInput: Date){
     
     const now = moment(new Date()).startOf('day');
-    const dateStart = moment(dateStartInput).startOf('day');
     const dateWishEnd = moment(dateWishEndInput).startOf('day');
     
-    if(now.isAfter(dateStart))
-      throw new BadRequestException(`Data início não pode ser inferior a data atual`);
+    if(now.isAfter(dateWishEnd))
+      throw new BadRequestException(`Data de previsão de término não pode ser inferior a data atual`);
 
-    if(dateStart.isAfter(dateWishEnd))
-      throw new BadRequestException(`Data início não pode ser superior a data de previsão de término da tarefa`);
   }
 }

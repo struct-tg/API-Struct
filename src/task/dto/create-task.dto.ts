@@ -13,10 +13,6 @@ export class CreateTaskDto {
     @MinLength(2, {message: `description deve ter um tamanho maior ou igual a 2 caracteres`})
     description: string;
 
-    @IsNotEmpty({message: `dateStart não pode ser vazio`})
-    @IsDateString({}, {message: `dateStart deve ser uma data válida`})
-    dateStart: Date;
-
     @IsNotEmpty({message: `dateWishEnd não pode ser vazio`})
     @IsDateString({}, {message: `dateWishEnd deve ser uma data válida`})
     dateWishEnd: Date;

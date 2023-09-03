@@ -22,7 +22,6 @@ model Task {
   id          Int       @id @default(autoincrement())
   name        String
   description String
-  dateStart   DateTime  @db.Date
   dateWishEnd DateTime  @db.Date
   dateEnd     DateTime? @db.Date
   userId      Int
