@@ -104,9 +104,11 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
     private genereateFilter(idUser: number, status?: string, partialName?: string){
         let filter: any = {}
         filter = { userId: idUser}
-        
+
         const now = new Date();
-        now.setUTCHours(0, 0, 0, 0);
+
+        now.setUTCHours(now.getUTCHours() - now.getTimezoneOffset() / 60);
+        now.setUTCHours(0, 0, 0, 0);       
 
         switch(status){
             case TaskStatus.CONCLUIDO:
