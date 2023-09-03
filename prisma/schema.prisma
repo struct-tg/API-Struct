@@ -25,5 +25,5 @@ model Task {
   dateWishEnd DateTime  @db.Date
   dateEnd     DateTime? @db.Date
   userId      Int
-  user        User?     @relation(fields: [userId], references: [id])
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
