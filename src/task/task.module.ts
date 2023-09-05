@@ -4,10 +4,12 @@ import { TaskController } from './task.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { TaskGatewayPrisma } from './gateways/task-bd/task-gateway-prisma';
 import { UserModule } from 'src/user/user.module';
+import { SubtaskModule } from 'src/subtask/subtask.module';
 
 @Module({
   imports: [
-    PrismaModule
+    PrismaModule,
+    SubtaskModule
   ],
   controllers: [TaskController],
   providers: [
