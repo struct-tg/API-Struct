@@ -65,6 +65,9 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         const task = await this.prisma.task.findUnique({
           where: {
             id
+          },
+          include: {
+            subTasks: true
           }
         })
   
