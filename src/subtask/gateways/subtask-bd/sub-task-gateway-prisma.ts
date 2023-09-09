@@ -15,4 +15,14 @@ export class SubTaskGatewayPrisma implements SubTaskGatewayInterface{
             data: listCreateSubtask
         })
     }
+
+    async delete( taskId: number): Promise<void> {
+
+        await this.prisma.subTask.deleteMany({
+            where: {
+                taskId
+            }
+        })
+
+    }
 }

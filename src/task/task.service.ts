@@ -24,7 +24,7 @@ export class TaskService {
 
     const taskCreated = await this.taskGateway.create(createTaskDto);
 
-    this.subTaskService.create(createTaskDto.subTasks, taskCreated.id);
+    await this.subTaskService.create(createTaskDto.subTasks, taskCreated.id);
     return taskCreated
   }
 
@@ -72,7 +72,9 @@ export class TaskService {
     updateTaskDto.dateWishEnd = new Date(updateTaskDto.dateWishEnd)
     updateTaskDto.userId = idUserLog
 
+    
     const taskUpdated = await this.taskGateway.update(id, updateTaskDto);
+    await this.subTaskService.update(updateTaskDto.subTasks, taskUpdated.id);
 
     return taskUpdated;
   }

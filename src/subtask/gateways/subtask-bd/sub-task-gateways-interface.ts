@@ -2,5 +2,6 @@ import { CreateSubtaskDto } from "src/subtask/dto/create-subtask.dto";
 import { Subtask } from "src/subtask/entities/subtask.entity";
 
 export interface SubTaskGatewayInterface{
-    create (listCreateSubtaskDto: Subtask[]): Promise<void>
+    create (listCreateSubtask: Subtask[]): Promise<void>;
+    delete(taskId: number): Promise<void>;
 }
