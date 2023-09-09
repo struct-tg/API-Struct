@@ -3,4 +3,8 @@ export class Subtask {
     description: string;
     status: boolean;
     taskId: number;
+
+    constructor(partial: Partial<Subtask>){
+        Object.assign(this, partial);
+    }
 }

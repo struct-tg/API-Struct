@@ -6,14 +6,14 @@ import { UserService } from 'src/user/user.service';
 import * as moment from 'moment';
 import { Task } from './entities/task.entity';
 import { Pagination } from 'src/utils/pagination';
-import { SubtaskService } from 'src/subtask/subtask.service';
+import { SubTaskService } from 'src/subtask/subtask.service';
 
 @Injectable()
 export class TaskService {
   constructor(
     @Inject("TaskGatewayBD")
     private taskGateway: TaskGatewayInterface,
-    private subTaskService: SubtaskService
+    private subTaskService: SubTaskService
   ){}
   
   async create(idUserLog: number, createTaskDto: CreateTaskDto) {
@@ -25,7 +25,7 @@ export class TaskService {
     const taskCreated = await this.taskGateway.create(createTaskDto);
 
     this.subTaskService.create(createTaskDto.subTasks, taskCreated.id);
-    return { taskCreated: "Deu ruim" };
+    return taskCreated
   }
 
   async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, ascend = false) {

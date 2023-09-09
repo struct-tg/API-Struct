@@ -1,15 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateSubtaskDto } from './dto/create-subtask.dto';
-import { UpdateSubtaskDto } from './dto/update-subtask.dto';
+import { Subtask } from './entities/subtask.entity';
+import { SubTaskGatewayInterface } from './gateways/subtask-bd/sub-task-gateways-interface';
 
 @Injectable()
-export class SubtaskService {
-  create(listCreateSubtaskDto: CreateSubtaskDto[], idTask: number) {
+export class SubTaskService {
 
-    console.log(`\n\n\nLista de sub tasks da task: ${idTask}`);
-    console.log(listCreateSubtaskDto);
-    
-    return 'This action adds a new subtask';
+  constructor(
+    @Inject("SubTaskGatewayBd")
+    private subTaskService: SubTaskGatewayInterface
+  ){}
+
+  async create(listCreateSubtaskDto: CreateSubtaskDto[], taskId: number) {
+
+    let listCreateSubtask = listCreateSubtaskDto.map(item => {
+      return new Subtask({...item, taskId})
+    })
+
+    await this.subTaskService.create(listCreateSubtask);
   }
 
   remove(id: number) {
