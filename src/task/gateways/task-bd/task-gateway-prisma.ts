@@ -15,8 +15,11 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
     ){}
 
     async create(createTaskDto: CreateTaskDto): Promise<Task>{
+
+        const { subTasks, ...onlyTask} = createTaskDto;
+
         const taskCreated = await this.prisma.task.create({
-            data: createTaskDto
+            data: onlyTask
         })
 
         return taskCreated;
@@ -75,8 +78,11 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
     }
 
     async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task>{
+
+        const { subTasks, ...onlyTask} = updateTaskDto;
+
         const task = await this.prisma.task.update({
-            data: updateTaskDto,
+            data: onlyTask,
             where: {
                 id
             }

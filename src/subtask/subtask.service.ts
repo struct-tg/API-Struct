@@ -4,16 +4,12 @@ import { UpdateSubtaskDto } from './dto/update-subtask.dto';
 
 @Injectable()
 export class SubtaskService {
-  create(createSubtaskDto: CreateSubtaskDto) {
+  create(listCreateSubtaskDto: CreateSubtaskDto[], idTask: number) {
+
+    console.log(`\n\n\nLista de sub tasks da task: ${idTask}`);
+    console.log(listCreateSubtaskDto);
+    
     return 'This action adds a new subtask';
-  }
-
-  findAll() {
-    return `This action returns all subtask`;
-  }
-
-  update(id: number, updateSubtaskDto: UpdateSubtaskDto) {
-    return `This action updates a #${id} subtask`;
   }
 
   remove(id: number) {
