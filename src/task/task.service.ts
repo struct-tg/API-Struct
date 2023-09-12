@@ -83,8 +83,10 @@ export class TaskService {
     const task = await this.findOne(idUserLog, id);
     if(task.dateEnd)
       await this.taskGateway.onOff(id, null);
-    else
+    else{
       await this.taskGateway.onOff(id, new Date()); 
+      await this.subTaskService.onOffByIdTask(id);
+    }
   }
 
   async remove(idUserLog: number, id: number) {

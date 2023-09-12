@@ -35,4 +35,8 @@ export class SubTaskService {
       await this.subTaskGateway.create(listUpdateSubtask);
     }
   }
+
+  async onOffByIdTask(taskId: number) {
+    await this.subTaskGateway.onOffByIdTask(taskId);
+  }
 }

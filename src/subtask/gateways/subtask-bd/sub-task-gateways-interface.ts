@@ -4,4 +4,5 @@ import { Subtask } from "src/subtask/entities/subtask.entity";
 export interface SubTaskGatewayInterface{
     create (listCreateSubtask: Subtask[]): Promise<void>;
     delete(taskId: number): Promise<void>;
+    onOffByIdTask(taskId: number): Promise<void>;
 }
