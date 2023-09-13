@@ -4,13 +4,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './configs';
 import { AuthModule } from './guards/auth/auth.module';
 import { TaskModule } from './task/task.module';
+import { PomodoroModule } from './pomodoro/pomodoro.module';
 
 @Module({
   imports: [
     JwtModule.register(jwtConfig),
     UserModule,
     AuthModule,
-    TaskModule
+    TaskModule,
+    PomodoroModule
   ],
   controllers: [],
   providers: [],

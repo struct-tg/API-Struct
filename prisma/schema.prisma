@@ -36,3 +36,8 @@ model SubTask {
   taskId      Int
   task        Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
+
+model Pomodoro{
+  id Int @id @default(autoincrement())
+  
+}

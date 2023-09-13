@@ -1,8 +1,7 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, ForbiddenException,forwardRef } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskGatewayInterface } from './gateways/task-bd/task-gateway-interface';
-import { UserService } from 'src/user/user.service';
 import * as moment from 'moment';
 import { Task } from './entities/task.entity';
 import { Pagination } from 'src/utils/pagination';
@@ -33,10 +32,10 @@ export class TaskService {
     if(typeof(page) === 'number' && typeof(limit) === 'number' ){
 
       if(page < 1)
-        throw new BadRequestException(`O page deve ser um número positivo`)
+        throw new BadRequestException(`Page deve ser positivo`)
 
       if(limit < 1)
-        throw new BadRequestException(`O limit deve ser um número positivo`)
+        throw new BadRequestException(`Limit deve ser positivo`)
 
       const count = await this.taskGateway.count(idUser, status, partialName);
       const data = await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, ascend);
@@ -55,7 +54,7 @@ export class TaskService {
     const task = await this.taskGateway.findById(id)    
 
     if(!task || task.userId !== idUserLog)
-      throw new NotFoundException(`task de id ${id} não encontrado`)
+      throw new NotFoundException(`Task não encontrada`)
 
     return task
   }
@@ -65,7 +64,7 @@ export class TaskService {
     const task = await this.findOne(idUserLog, id);
     
     if(task.dateEnd)
-      throw new ForbiddenException(`Essa tarefa já foi finalizada`);
+      throw new ForbiddenException(`Tarefa finalizada`);
 
     this.validateDate(updateTaskDto.dateWishEnd);
 
@@ -101,7 +100,7 @@ export class TaskService {
     const dateWishEnd = moment(dateWishEndInput).startOf('day');
     
     if(now.isAfter(dateWishEnd))
-      throw new BadRequestException(`Data de previsão de término não pode ser inferior a data atual`);
+      throw new BadRequestException(`Data inválida`);
 
   }
 }

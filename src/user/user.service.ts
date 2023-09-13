@@ -21,7 +21,7 @@ export class UserService {
     const userExists = await this.userGateway.findByEmail(createUserDto.email); 
     
     if(userExists)
-      throw new BadRequestException(`Um usuário com o e-mail informado já foi cadastrado`)
+      throw new BadRequestException(`E-mail já cadastrado`)
 
     createUserDto.password = this.generatePasswordCrypt(createUserDto.password);
 
@@ -83,7 +83,7 @@ export class UserService {
     const user = await this.userGateway.findById(id);
 
     if(!user)
-      throw new NotFoundException(`Usuário de id: ${id} não encontrado`)
+      throw new NotFoundException(`Usuário não encontrado`)
 
     return user;
   }
