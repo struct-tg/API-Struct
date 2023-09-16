@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int        @id @default(autoincrement())
   name     String
   password String
-  email    String @unique
+  email    String     @unique
   tasks    Task[]
+  Pomodoro Pomodoro[]
 }
 
 model Task {
@@ -26,7 +27,7 @@ model Task {
   dateEnd     DateTime? @db.Date
   userId      Int
   user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  subTasks     SubTask[]
+  subTasks    SubTask[]
 }
 
 model SubTask {
@@ -37,7 +38,14 @@ model SubTask {
   task        Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
-model Pomodoro{
-  id Int @id @default(autoincrement())
-  
+model Pomodoro {
+  id                  Int     @id @default(autoincrement())
+  timer               Int
+  timerPauseShort     Int
+  timerPauseLong      Int
+  quantityPauseLong   Int
+  startAutomaticTimer Boolean
+  startAutomaticPause Boolean
+  userId              Int
+  user                User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
