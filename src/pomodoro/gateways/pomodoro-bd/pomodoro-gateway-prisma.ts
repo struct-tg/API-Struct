@@ -17,4 +17,14 @@ export class PomodoroGatewayPrisma implements PomodoroGatewayInterface{
 
         return pomodoro;
     }
+
+    async findAll(idUser: number): Promise<Pomodoro[]> {
+        const listPomodoro = await this.prisma.pomodoro.findMany({
+            where: {
+                userId: idUser
+            }
+        })
+
+        return listPomodoro;
+    }
 }

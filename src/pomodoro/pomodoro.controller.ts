@@ -14,9 +14,10 @@ export class PomodoroController {
     return this.pomodoroService.create(req.user.id, createPomodoroDto);
   }
 
+  @UseGuards(JwtGuard)
   @Get()
-  findAll() {
-    return this.pomodoroService.findAll();
+  findAll(@Req() req:any) {
+    return this.pomodoroService.findAll(req.user.id);
   }
 
   @Get(':id')

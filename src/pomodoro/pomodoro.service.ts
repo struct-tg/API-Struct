@@ -19,8 +19,9 @@ export class PomodoroService {
     return pomodoro;
   }
 
-  findAll() {
-    return `This action returns all pomodoro`;
+  async findAll(idUserLog: number) {
+    const listPomodoro = await this.pomodoroGateway.findAll(idUserLog);
+    return listPomodoro;
   }
 
   findOne(id: number) {
