@@ -27,4 +27,14 @@ export class PomodoroGatewayPrisma implements PomodoroGatewayInterface{
 
         return listPomodoro;
     }
+
+    async findById(id: number): Promise<Pomodoro> {
+        const pomodoro = await this.prisma.pomodoro.findUnique({
+            where: {
+                id
+            }
+        })
+
+        return pomodoro;
+    }
 }
