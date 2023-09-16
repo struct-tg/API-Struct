@@ -1,11 +1,11 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { PomodoraGatewayInterface } from "./pomodoro-gateway-interface";
+import { PomodoroGatewayInterface } from "./pomodoro-gateway-interface";
 import { CreatePomodoroDto } from "src/pomodoro/dto/create-pomodoro.dto";
 import { Pomodoro } from "src/pomodoro/entities/pomodoro.entity";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class PomodoroGatewayPrisma implements PomodoraGatewayInterface{
+export class PomodoroGatewayPrisma implements PomodoroGatewayInterface{
     constructor(
         private prisma: PrismaService
     ){}

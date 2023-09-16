@@ -1,9 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreatePomodoroDto } from './dto/create-pomodoro.dto';
 import { UpdatePomodoroDto } from './dto/update-pomodoro.dto';
+import { PomodoroGatewayInterface } from './gateways/pomodoro-bd/pomodoro-gateway-interface';
 
 @Injectable()
 export class PomodoroService {
+
+  constructor(
+    @Inject('PomodoroGateawyBD')
+    private pomodoroGateway: PomodoroGatewayInterface
+  ){}
+
   create(createPomodoroDto: CreatePomodoroDto) {
     return 'This action adds a new pomodoro';
   }
