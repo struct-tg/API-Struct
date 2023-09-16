@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePomodoroDto } from './dto/create-pomodoro.dto';
 import { UpdatePomodoroDto } from './dto/update-pomodoro.dto';
 import { PomodoroGatewayInterface } from './gateways/pomodoro-bd/pomodoro-gateway-interface';
@@ -26,8 +26,13 @@ export class PomodoroService {
     return new Pagination<Pomodoro>(data, 1, data.length, data.length);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pomodoro`;
+  async findOne(idUserLog: number, id: number) {
+    const pomodoro = await this.pomodoroGateway.findById(id);
+    
+    if(!pomodoro || pomodoro.userId !== idUserLog)
+      throw new NotFoundException(`Pomodoro não encontrado`);
+
+    return pomodoro;
   }
 
   update(id: number, updatePomodoroDto: UpdatePomodoroDto) {
