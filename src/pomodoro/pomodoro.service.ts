@@ -11,8 +11,12 @@ export class PomodoroService {
     private pomodoroGateway: PomodoroGatewayInterface
   ){}
 
-  create(createPomodoroDto: CreatePomodoroDto) {
-    return 'This action adds a new pomodoro';
+  async create(idUserLog: number, createPomodoroDto: CreatePomodoroDto) {
+
+    createPomodoroDto.userId = idUserLog;
+
+    const pomodoro = await this.pomodoroGateway.create(createPomodoroDto);
+    return pomodoro;
   }
 
   findAll() {
