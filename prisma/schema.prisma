@@ -44,8 +44,8 @@ model Pomodoro {
   timerPauseShort     Int
   timerPauseLong      Int
   quantityPauseLong   Int
-  startAutomaticTimer Boolean
-  startAutomaticPause Boolean
+  startAutomaticTimer Boolean @default(false)
+  startAutomaticPause Boolean @default(false)
   userId              Int
   user                User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
