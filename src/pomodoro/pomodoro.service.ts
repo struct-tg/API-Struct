@@ -39,7 +39,8 @@ export class PomodoroService {
     return `This action updates a #${id} pomodoro`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pomodoro`;
+  async remove(idUserLog: number, id: number) {
+    await this.findOne(idUserLog, id);
+    await this.pomodoroGateway.remove(id);
   }
 }

@@ -5,4 +5,5 @@ export interface PomodoroGatewayInterface{
     create(createPomodoroDto: CreatePomodoroDto): Promise<Pomodoro>;
     findAll(idUser: number): Promise<Pomodoro[]>;
     findById(id: number): Promise<Pomodoro>;
+    remove(id: number): Promise<void>;
 }

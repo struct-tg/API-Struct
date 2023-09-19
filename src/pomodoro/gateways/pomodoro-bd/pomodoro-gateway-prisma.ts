@@ -37,4 +37,12 @@ export class PomodoroGatewayPrisma implements PomodoroGatewayInterface{
 
         return pomodoro;
     }
+
+    async remove(id: number): Promise<void> {
+        await this.prisma.pomodoro.delete({
+            where: {
+                id
+            }
+        })
+    }
 }

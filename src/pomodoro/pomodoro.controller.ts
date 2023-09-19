@@ -10,6 +10,8 @@ import {
   Req,
   ParseIntPipe,
   NotAcceptableException,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { PomodoroService } from './pomodoro.service';
 import { CreatePomodoroDto } from './dto/create-pomodoro.dto';
@@ -56,8 +58,13 @@ export class PomodoroController {
     return this.pomodoroService.update(+id, updatePomodoroDto);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pomodoroService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Req() req: any, @Param('id', new ParseIntPipe({
+    exceptionFactory: () => 
+      new NotAcceptableException(`O id tem que ser numérico`)
+  })) id: number) {
+    return this.pomodoroService.remove(req.user.id, id);
   }
 }
