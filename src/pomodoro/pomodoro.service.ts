@@ -35,8 +35,12 @@ export class PomodoroService {
     return pomodoro;
   }
 
-  update(id: number, updatePomodoroDto: UpdatePomodoroDto) {
-    return `This action updates a #${id} pomodoro`;
+  async update(idUserLog: number, id: number, updatePomodoroDto: UpdatePomodoroDto) {
+    await this.findOne(idUserLog, id);
+
+    const pomodoroUpdated = await this.pomodoroGateway.update(id, updatePomodoroDto);
+
+    return pomodoroUpdated;
   }
 
   async remove(idUserLog: number, id: number) {

@@ -3,6 +3,7 @@ import { PomodoroGatewayInterface } from "./pomodoro-gateway-interface";
 import { CreatePomodoroDto } from "src/pomodoro/dto/create-pomodoro.dto";
 import { Pomodoro } from "src/pomodoro/entities/pomodoro.entity";
 import { Injectable } from "@nestjs/common";
+import { UpdatePomodoroDto } from "src/pomodoro/dto/update-pomodoro.dto";
 
 @Injectable()
 export class PomodoroGatewayPrisma implements PomodoroGatewayInterface{
@@ -34,6 +35,17 @@ export class PomodoroGatewayPrisma implements PomodoroGatewayInterface{
                 id
             }
         })
+
+        return pomodoro;
+    }
+
+    async update(id: number, updatePomodoroDto: UpdatePomodoroDto): Promise<Pomodoro> {
+        const pomodoro = await this.prisma.pomodoro.update({
+            data: updatePomodoroDto,
+            where: {
+                id
+            }
+        });
 
         return pomodoro;
     }
