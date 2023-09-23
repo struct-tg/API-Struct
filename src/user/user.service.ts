@@ -58,6 +58,15 @@ export class UserService {
     return userFinded;
   }
 
+  async findByEmail(email: string) {
+    const user = await this.userGateway.findByEmail(email);
+
+    if(!user)
+      throw new NotFoundException(`Usuário não encontrado`)
+
+    return user;
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
 
     await this.getOneUser(id);

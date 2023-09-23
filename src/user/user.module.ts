@@ -23,5 +23,6 @@ import { AuthModule } from 'src/guards/auth/auth.module';
       useExisting:  UserGatewayPrisma
     }
   ],
+  exports: [UserService]
 })
 export class UserModule {}
