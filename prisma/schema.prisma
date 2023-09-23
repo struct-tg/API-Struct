@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  name     String
-  password String
-  email    String     @unique
-  tasks    Task[]
-  Pomodoro Pomodoro[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  password      String
+  email         String         @unique
+  tasks         Task[]
+  Pomodoro      Pomodoro[]
+  ValidationOtp ValidationOtp?
 }
 
 model Task {
@@ -48,4 +49,12 @@ model Pomodoro {
   startAutomaticPause Boolean @default(false)
   userId              Int
   user                User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ValidationOtp {
+  id      Int      @id @default(autoincrement())
+  otp     Int
+  updated DateTime
+  userId  Int      @unique
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
