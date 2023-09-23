@@ -5,6 +5,7 @@ import { jwtConfig } from './configs';
 import { AuthModule } from './guards/auth/auth.module';
 import { TaskModule } from './task/task.module';
 import { PomodoroModule } from './pomodoro/pomodoro.module';
+import { ValidationOtpModule } from './validation-otp/validation-otp.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { PomodoroModule } from './pomodoro/pomodoro.module';
     UserModule,
     AuthModule,
     TaskModule,
-    PomodoroModule
+    PomodoroModule,
+    ValidationOtpModule
   ],
   controllers: [],
   providers: [],
