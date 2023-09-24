@@ -54,7 +54,7 @@ model Pomodoro {
 model ValidationOtp {
   id      Int      @id @default(autoincrement())
   otp     Int
-  updated DateTime
+  updated DateTime @updatedAt
   userId  Int      @unique
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

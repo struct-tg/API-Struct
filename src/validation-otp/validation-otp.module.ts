@@ -3,6 +3,7 @@ import { ValidationOtpService } from './validation-otp.service';
 import { ValidationOtpController } from './validation-otp.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { UserModule } from 'src/user/user.module';
+import { ValidationOtpGatewayPrisma } from './gateways/validation-otp-bd/validation-otp-gateway-prisma';
 
 @Module({
   imports: [
@@ -10,6 +11,13 @@ import { UserModule } from 'src/user/user.module';
     UserModule
   ],
   controllers: [ValidationOtpController],
-  providers: [ValidationOtpService],
+  providers: [
+    ValidationOtpService,
+    ValidationOtpGatewayPrisma,
+    {
+      provide: 'ValidationOtpGatewayBD',
+      useExisting: ValidationOtpGatewayPrisma
+    }
+  ],
 })
 export class ValidationOtpModule {}
