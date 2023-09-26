@@ -11,12 +11,14 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  name       String
-  password   String
-  email      String       @unique
-  tasks      Task[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  password      String
+  email         String         @unique
+  tasks         Task[]
   discipline Discipline[]
+  Pomodoro      Pomodoro[]
+  ValidationOtp ValidationOtp?
 }
 
 model Task {
@@ -60,6 +62,26 @@ model Activity {
   name         String
   disciplineId Int
   discipline   Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+}
+
+model Pomodoro {
+  id                  Int     @id @default(autoincrement())
+  timer               Int
+  timerPauseShort     Int
+  timerPauseLong      Int
+  quantityPauseLong   Int
+  startAutomaticTimer Boolean @default(false)
+  startAutomaticPause Boolean @default(false)
+  userId              Int
+  user                User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ValidationOtp {
+  id      Int      @id @default(autoincrement())
+  otp     Int
+  updated DateTime @updatedAt
+  userId  Int      @unique
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum StatusDiscipline {

@@ -16,7 +16,7 @@ export class SubTaskGatewayPrisma implements SubTaskGatewayInterface{
         })
     }
 
-    async delete( taskId: number): Promise<void> {
+    async delete(taskId: number): Promise<void> {
 
         await this.prisma.subTask.deleteMany({
             where: {
@@ -24,5 +24,16 @@ export class SubTaskGatewayPrisma implements SubTaskGatewayInterface{
             }
         })
 
+    }
+
+    async onOffByIdTask(taskId: number): Promise<void> {
+        await this.prisma.subTask.updateMany({
+            data: {
+                status: true
+            },
+            where: {
+                taskId
+            }
+        })
     }
 }

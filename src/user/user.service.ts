@@ -21,7 +21,7 @@ export class UserService {
     const userExists = await this.userGateway.findByEmail(createUserDto.email); 
     
     if(userExists)
-      throw new BadRequestException(`Um usuário com o e-mail informado já foi cadastrado`)
+      throw new BadRequestException(`E-mail já cadastrado`)
 
     createUserDto.password = this.generatePasswordCrypt(createUserDto.password);
 
@@ -58,6 +58,15 @@ export class UserService {
     return userFinded;
   }
 
+  async findByEmail(email: string) {
+    const user = await this.userGateway.findByEmail(email);
+
+    if(!user)
+      throw new NotFoundException(`Usuário não encontrado`)
+
+    return user;
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
 
     await this.getOneUser(id);
@@ -83,7 +92,7 @@ export class UserService {
     const user = await this.userGateway.findById(id);
 
     if(!user)
-      throw new NotFoundException(`Usuário de id: ${id} não encontrado`)
+      throw new NotFoundException(`Usuário não encontrado`)
 
     return user;
   }

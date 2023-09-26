@@ -6,6 +6,8 @@ import { AuthModule } from './guards/auth/auth.module';
 import { TaskModule } from './task/task.module';
 import { DisciplineModule } from './discipline/discipline.module';
 import { ActivityModule } from './activity/activity.module';
+import { PomodoroModule } from './pomodoro/pomodoro.module';
+import { ValidationOtpModule } from './validation-otp/validation-otp.module';
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { ActivityModule } from './activity/activity.module';
     AuthModule,
     TaskModule,
     DisciplineModule,
-    ActivityModule
+    ActivityModule,
+    PomodoroModule,
+    ValidationOtpModule
   ],
   controllers: [],
   providers: [],

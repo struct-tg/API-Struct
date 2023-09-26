@@ -8,5 +8,5 @@ export class CreateSubtaskDto {
 
     @IsOptional()
     @IsBoolean({message: `status deve ser um booleano`})
-    status = true;
+    status = false;
 }
