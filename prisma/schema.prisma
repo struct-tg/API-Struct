@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  password String
-  email    String @unique
-  tasks    Task[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  password   String
+  email      String       @unique
+  tasks      Task[]
+  discipline Discipline[]
 }
 
 model Task {
@@ -26,7 +27,7 @@ model Task {
   dateEnd     DateTime? @db.Date
   userId      Int
   user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  subTasks     SubTask[]
+  subTasks    SubTask[]
 }
 
 model SubTask {
@@ -35,4 +36,38 @@ model SubTask {
   status      Boolean
   taskId      Int
   task        Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Discipline {
+  id          Int                   @id @default(autoincrement())
+  nameTeacher String
+  status      StatusDiscipline      @default(DISAPPROVED)
+  typeAv      TypeAverageDiscipline
+  noteMin     Float
+  name        String
+  userId      Int
+  user        User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity    Activity[]
+}
+
+model Activity {
+  id           Int        @id @default(autoincrement())
+  description  String?
+  date         DateTime
+  note         Float      @default(0) //COLOAR DEFAULT 0 OBRIGATÓRIO
+  weight       Float? //SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
+  comment      String?
+  name         String
+  disciplineId Int
+  discipline   Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+}
+
+enum StatusDiscipline {
+  APPROVED
+  DISAPPROVED
+}
+
+enum TypeAverageDiscipline {
+  SIMPLE
+  WEIGHTED
 }
