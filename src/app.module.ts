@@ -4,6 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './configs';
 import { AuthModule } from './guards/auth/auth.module';
 import { TaskModule } from './task/task.module';
+import { DisciplineModule } from './discipline/discipline.module';
+import { ActivityModule } from './activity/activity.module';
 import { PomodoroModule } from './pomodoro/pomodoro.module';
 import { ValidationOtpModule } from './validation-otp/validation-otp.module';
 
@@ -13,6 +15,8 @@ import { ValidationOtpModule } from './validation-otp/validation-otp.module';
     UserModule,
     AuthModule,
     TaskModule,
+    DisciplineModule,
+    ActivityModule,
     PomodoroModule,
     ValidationOtpModule
   ],

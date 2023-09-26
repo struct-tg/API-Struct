@@ -16,6 +16,7 @@ model User {
   password      String
   email         String         @unique
   tasks         Task[]
+  discipline Discipline[]
   Pomodoro      Pomodoro[]
   ValidationOtp ValidationOtp?
 }
@@ -39,6 +40,30 @@ model SubTask {
   task        Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
+model Discipline {
+  id          Int                   @id @default(autoincrement())
+  nameTeacher String
+  status      StatusDiscipline      @default(DISAPPROVED)
+  typeAv      TypeAverageDiscipline
+  noteMin     Float
+  name        String
+  userId      Int
+  user        User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity    Activity[]
+}
+
+model Activity {
+  id           Int        @id @default(autoincrement())
+  description  String?
+  date         DateTime
+  note         Float      @default(0) //COLOAR DEFAULT 0 OBRIGATÓRIO
+  weight       Float? //SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
+  comment      String?
+  name         String
+  disciplineId Int
+  discipline   Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+}
+
 model Pomodoro {
   id                  Int     @id @default(autoincrement())
   timer               Int
@@ -57,4 +82,14 @@ model ValidationOtp {
   updated DateTime @updatedAt
   userId  Int      @unique
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum StatusDiscipline {
+  APPROVED
+  DISAPPROVED
+}
+
+enum TypeAverageDiscipline {
+  SIMPLE
+  WEIGHTED
 }
