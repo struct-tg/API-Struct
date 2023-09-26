@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { GenerateOtp } from './dto/generate-otp.dto';
 import { UserService } from 'src/user/user.service';
 import { ValidationOtpGatewayInterface } from './gateways/validation-otp-bd/validation-otp-gateway-interface';
@@ -20,5 +20,11 @@ export class ValidationOtpService {
         const otp = Math.floor(Math.random() * baseToIntOtp);
 
         await this.validationOtpGateway.generate(otp, user.id)
+    }
+
+    async verifyOtp(otp: number){
+        const validation = await this.validationOtpGateway.verify(otp);
+        if(!validation)
+            throw new NotFoundException(`Código não encontrado`);
     }
 }
