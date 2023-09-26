@@ -10,11 +10,36 @@ export class ValidationOtpGatewayPrisma implements ValidationOtpGatewayInterface
     constructor(private prisma: PrismaService){}
 
     async generate(otp: number, userId: number): Promise<void> {
-        await this.prisma.validationOtp.create({
-            data: {
-                otp,
-                userId
-            }
-        })
+
+        const exist = await this.existByIdUser(userId);
+
+        if(exist){
+            await this.prisma.validationOtp.update({
+                where: {
+                    userId
+                },
+                data: {
+                    otp
+                }
+            })
+        }else{
+            await this.prisma.validationOtp.create({
+                data: {
+                    otp,
+                    userId
+                }
+            })
+        }
     }
+
+    private async existByIdUser(idUser: number): Promise<boolean>{
+        const validationOtp = await this.prisma.validationOtp.findUnique({
+            where: {
+                userId: idUser
+            }
+        });
+
+        return validationOtp? true: false;
+    }
+
 }

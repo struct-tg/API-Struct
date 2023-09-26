@@ -15,8 +15,8 @@ export class ValidationOtpService {
         const { email } = generateOtp;
         const user = await this.userService.findByEmail(email);
 
-        const maxIntPlace = 6
-        const baseToIntOtp = Math.pow(10, maxIntPlace)
+        const maxIntPlace = 6;
+        const baseToIntOtp = Math.pow(10, maxIntPlace);
         const otp = Math.floor(Math.random() * baseToIntOtp);
 
         await this.validationOtpGateway.generate(otp, user.id)
