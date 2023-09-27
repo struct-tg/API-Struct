@@ -70,10 +70,28 @@ export class DisciplineController {
           new NotAcceptableException(`A ordenação ascendente (antigo para o recente) deve ser um booleano. Se false será descendente (do recente para o antigo)`),
         optional: true
       })
+      )
+      ascend?: boolean,
+    @Query(
+      'note',
+      new ParseIntPipe({
+        exceptionFactory: () =>
+        new NotAcceptableException(`A note tem que ser numérica`),
+        optional: true
+      }),
     )
-    ascend?: boolean
+    note?: number,
+    @Query(
+      'noteMin',
+      new ParseIntPipe({
+        exceptionFactory: () =>
+        new NotAcceptableException(`A noteMin tem que ser numérica`),
+        optional: true
+      }),
+    )
+    noteMin?: number
   ) {
-    return this.disciplineService.findAll(req.user.id, page, limit, status, partialName, ascend);
+    return this.disciplineService.findAll(req.user.id, page, limit, status, partialName, note, noteMin, ascend);
   }
 
   @UseGuards(JwtGuard)
@@ -96,7 +114,11 @@ export class DisciplineController {
 
   @UseGuards(JwtGuard)
   @Delete(':id')
-  remove(@Req() req: any, @Param('id') id: number) {
+  remove(@Req() req: any, @Param(
+    'id',
+    new ParseIntPipe({
+      exceptionFactory: () => new NotAcceptableException("O id tem que ser numérico")
+    })) id: number) {
     return this.disciplineService.remove(req.user.id, id);
   }
 }

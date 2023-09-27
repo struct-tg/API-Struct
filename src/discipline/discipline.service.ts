@@ -13,7 +13,7 @@ export class DisciplineService {
     private disciplineGateway: DisciplineGatewayInterface,
     private activityService: ActivityService
   ) { }
-  
+
   async create(idUserLog: number, createDisciplineDto: CreateDisciplineDto) {
     createDisciplineDto.userId = idUserLog
 
@@ -23,43 +23,56 @@ export class DisciplineService {
     return disciplineCreated
   }
 
-  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, ascend = false) {
-    if(typeof(page) === 'number' && typeof(limit) === 'number' ){
+  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, note?: number, noteMin?: number, ascend = false) {
+    var typeNote: boolean;
+    typeNote = note >= noteMin ? true : false ;
+    
+    if (typeof (page) === 'number' && typeof (limit) === 'number') {
 
-      if(page < 1)
+      if (page < 1)
         throw new BadRequestException(`O page deve ser um número positivo`)
 
-      if(limit < 1)
+      if (limit < 1)
         throw new BadRequestException(`O limit deve ser um número positivo`)
 
-      const count = await this.disciplineGateway.count(idUser, status, partialName);
-      const data = await this.disciplineGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, ascend);
-      
+      const count = await this.disciplineGateway.count(idUser, status, partialName, typeNote);
+      const data = await this.disciplineGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, typeNote, ascend);
+
       return new Pagination<Discipline>(data, page, limit, count);
     }
-    else{
-      const data = await this.disciplineGateway.findAll(idUser, status, partialName, ascend);
+    else {
+      const data = await this.disciplineGateway.findAll(idUser, status, partialName, typeNote, ascend);
 
       return new Pagination<Discipline>(data, 1, data.length, data.length);
     }
   }
 
-  async findOne(idUserLog: number, id: number) {
-    const discipline = await this.disciplineGateway.findById(id) 
+  // async update(disciplineId: number, updateDisciplineDto: UpdateDisciplineDto) {
+  //   await this.disciplineGateway.delete(disciplineId);
 
-    if(!discipline || discipline.userId !== idUserLog)
-      throw new NotFoundException(`discipline de id ${id} não encontrado`)
+  //   if(listUpdateDisciplineDto && listUpdateDisciplineDto.length > 0){
+  //     let listUpdateDiscipline = listUpdateDisciplineDto.map(item => {
+  //       return new Discipline({...item, disciplineId})
+  //     })
 
-    return discipline
-  }
-
-  update(id: number, updateDisciplineDto: UpdateDisciplineDto) {
-    return `This action updates a #${id} discipline`;
-  }
+  //     await this.disciplineGateway.create(listUpdateDiscipline);
+  //   }
+  // }
 
   async remove(idUserLog: number, id: number) {
     await this.findOne(idUserLog, id);
 
     await this.disciplineGateway.remove(id);
   }
+
+  //#region Métodos
+  async findOne(idUserLog: number, id: number) {
+    const discipline = await this.disciplineGateway.findById(id)
+
+    if (!discipline || discipline.userId !== idUserLog)
+      throw new NotFoundException(`discipline de id ${id} não encontrado`)
+
+    return discipline
+  }
+  //#endregion
 }

@@ -28,9 +28,9 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         return disciplineCreated;
     }
 
-    async count(idUser: number, status: string, partialName: string): Promise<number>{
+    async count(idUser: number, status: string, partialName: string, typeNote: boolean): Promise<number>{
 
-        const filter = this.genereateFilter(idUser, status, partialName);
+        const filter = this.genereateFilter(idUser, typeNote, status, partialName);
 
         const count = await this.prisma.task.count({
             where: filter
@@ -39,9 +39,9 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         return count
     }
 
-    async findAll(idUser: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]> {
+    async findAll(idUser: number, status: string, partialName: string, typeNote: boolean, ascend: boolean): Promise<Discipline[]> {
 
-        const filter = this.genereateFilter(idUser, status, partialName);
+        const filter = this.genereateFilter(idUser, typeNote, status, partialName);
         const order = this.generateOrder(ascend);
 
         const disciplineList = await this.prisma.discipline.findMany({
@@ -52,9 +52,9 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         return disciplineList;
     }
 
-    async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]>{
+    async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, typeNote: boolean, ascend: boolean): Promise<Discipline[]>{
     
-        const filter = this.genereateFilter(idUser, status, partialName);    
+        const filter = this.genereateFilter(idUser, typeNote, status, partialName);    
         const order = this.generateOrder(ascend);
 
         const disciplineList = await this.prisma.discipline.findMany({
@@ -94,17 +94,6 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
     //     return task;
     // }
 
-    // async onOff(id: number, dateEnd: Date): Promise<void>{
-    //     await this.prisma.task.update({
-    //         data: {
-    //             dateEnd
-    //         },
-    //         where: {
-    //             id
-    //         }
-    //     })
-    // }
-
     async remove(id: number): Promise<void>{
         await this.prisma.discipline.delete({
             where: {
@@ -113,7 +102,7 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         })
     }
 
-    private genereateFilter(idUser: number, status?: string, partialName?: string){
+    private genereateFilter(idUser: number,  typeNote: boolean, status?: string, partialName?: string){
         let filter: any = {}
         filter = { userId: idUser}
 
@@ -125,7 +114,7 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         switch(status){
             case StatusDiscipline.APPROVED:
                 Object.assign(filter, {NOT: {
-                    dateEnd: null,
+                    typeNote: null,
                   }})
                 break;
             case StatusDiscipline.DISAPPROVED:
