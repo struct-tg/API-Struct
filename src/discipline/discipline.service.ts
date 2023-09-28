@@ -1,10 +1,11 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Discipline } from '@prisma/client';
+
+import { DisciplineGatewayInterface } from './gateways/discipline-bd/discipline-gateway-interface';
 import { CreateDisciplineDto } from './dto/create-discipline.dto';
 import { UpdateDisciplineDto } from './dto/update-discipline.dto';
-import { DisciplineGatewayInterface } from './gateways/discipline-bd/discipline-gateway-interface';
 import { ActivityService } from 'src/activity/activity.service';
 import { Pagination } from 'src/utils/pagination';
-import { Discipline } from '@prisma/client';
 
 @Injectable()
 export class DisciplineService {
@@ -23,10 +24,7 @@ export class DisciplineService {
     return disciplineCreated
   }
 
-  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, note?: number, noteMin?: number, ascend = false) {
-    var typeNote: boolean;
-    typeNote = note >= noteMin ? true : false ;
-    
+  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, ascend = false) {
     if (typeof (page) === 'number' && typeof (limit) === 'number') {
 
       if (page < 1)
@@ -35,29 +33,25 @@ export class DisciplineService {
       if (limit < 1)
         throw new BadRequestException(`O limit deve ser um número positivo`)
 
-      const count = await this.disciplineGateway.count(idUser, status, partialName, typeNote);
-      const data = await this.disciplineGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, typeNote, ascend);
+      const count = await this.disciplineGateway.count(idUser, status, partialName);
+      const data = await this.disciplineGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, ascend);
 
       return new Pagination<Discipline>(data, page, limit, count);
     }
     else {
-      const data = await this.disciplineGateway.findAll(idUser, status, partialName, typeNote, ascend);
+      const data = await this.disciplineGateway.findAll(idUser, status, partialName, ascend);
 
       return new Pagination<Discipline>(data, 1, data.length, data.length);
     }
   }
 
-  // async update(disciplineId: number, updateDisciplineDto: UpdateDisciplineDto) {
-  //   await this.disciplineGateway.delete(disciplineId);
+  async update(idUserLog: number, id: number, updateDisciplineDto: UpdateDisciplineDto) {
+    await this.findOne(idUserLog, id);
 
-  //   if(listUpdateDisciplineDto && listUpdateDisciplineDto.length > 0){
-  //     let listUpdateDiscipline = listUpdateDisciplineDto.map(item => {
-  //       return new Discipline({...item, disciplineId})
-  //     })
+    const disciplineUpdated = await this.disciplineGateway.update(id, updateDisciplineDto);
 
-  //     await this.disciplineGateway.create(listUpdateDiscipline);
-  //   }
-  // }
+    return disciplineUpdated;
+  }
 
   async remove(idUserLog: number, id: number) {
     await this.findOne(idUserLog, id);
@@ -65,7 +59,6 @@ export class DisciplineService {
     await this.disciplineGateway.remove(id);
   }
 
-  //#region Métodos
   async findOne(idUserLog: number, id: number) {
     const discipline = await this.disciplineGateway.findById(id)
 
@@ -74,5 +67,4 @@ export class DisciplineService {
 
     return discipline
   }
-  //#endregion
 }
