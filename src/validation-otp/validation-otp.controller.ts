@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Param, ParseIntPipe, NotAcceptableExceptio
 import { ValidationOtpService } from './validation-otp.service';
 import { JwtGuard } from 'src/guards/auth/jwt.guard';
 import { GenerateOtp } from './dto/generate-otp.dto';
+import { ChangePassword } from './dto/new-password.dto';
 
 @Controller('validation-otp')
 export class ValidationOtpController {
@@ -25,6 +26,15 @@ export class ValidationOtpController {
     otp: number
   ){
     return this.validationOtpService.verifyOtp(otp);
+  }
+
+  @Post('/new-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  changePassword(
+    @Body()
+    newPassword: ChangePassword
+  ){
+    return this.validationOtpService.changePassword(newPassword);
   }
 
 }
