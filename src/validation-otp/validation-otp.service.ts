@@ -25,7 +25,7 @@ export class ValidationOtpService {
     }
 
     async verifyOtp(otp: number){
-        const now = moment(new Date()).startOf('day');
+        const now = moment(new Date());
 
         const validation = await this.validationOtpGateway.verify(otp);
 
