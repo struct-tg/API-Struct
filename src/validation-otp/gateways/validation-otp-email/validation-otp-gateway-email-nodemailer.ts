@@ -26,16 +26,12 @@ export class ValidationOtpGatewayEmailNodemailer implements ValidationOtpGateway
             from: `contato.struct@outlook.com`,
             to,
             subject: `Redefinir Senha`,
-            text: `Olá aluno!<br>Aqui está seu código para redefinir a sua nova senha: ${otp}`
+            html: `Olá aluno!<br/>Aqui está seu código para redefinir a sua nova senha: <b>${otp}<b/>`
         }
         
         try{
-            const info = await this.transporter.sendMail(mailOptions);
-            console.log(`EMail Enviado`);
-            console.log(info.response);
+            await this.transporter.sendMail(mailOptions);
         } catch (erro) {
-            console.log(`Envio de email deu RUIM`);
-            console.log(erro);
             throw new BadRequestException(`Falha ao enviar o e-mail`);
         }
     }

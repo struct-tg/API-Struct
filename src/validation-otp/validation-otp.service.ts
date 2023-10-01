@@ -24,8 +24,11 @@ export class ValidationOtpService {
         const baseToIntOtp = Math.pow(10, maxIntPlace);
         const otp = Math.floor(Math.random() * baseToIntOtp);
 
-        await this.validationOtpGateway.generate(otp, user.id);
-        await this.validationOtpGatewayEmail.send(email, otp);
+
+        await Promise.all([
+            this.validationOtpGateway.generate(otp, user.id),
+            this.validationOtpGatewayEmail.send(email, otp)
+        ])
     }
 
     async verifyOtp(otp: number){
