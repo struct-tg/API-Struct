@@ -8,4 +8,5 @@ export interface UserGatewayInterface{
     findById(id: number): Promise<User>;
     delete(id: number): Promise<void>;
     update(id:number, updateUser: UpdateUserDto): Promise<User>;
+    changePassword(id: number, newPassword: string): Promise<void>;
 }

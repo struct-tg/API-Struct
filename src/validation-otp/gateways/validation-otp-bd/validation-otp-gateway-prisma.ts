@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ValidationOtpGatewayInterface } from "./validation-otp-gateway-interface";
 import { PrismaService } from "src/prisma/prisma.service";
 import { User } from 'src/user/entities/user.entity';
+import { ValidationOtp } from 'src/validation-otp/entities/validation-otp.entity';
 
 
 @Injectable()
@@ -30,6 +31,16 @@ export class ValidationOtpGatewayPrisma implements ValidationOtpGatewayInterface
                 }
             })
         }
+    }
+
+    async verify(otp: number): Promise<ValidationOtp> {
+        const validation = await this.prisma.validationOtp.findFirst({
+            where: {
+                otp
+            }
+        })
+
+        return validation;
     }
 
     private async existByIdUser(idUser: number): Promise<boolean>{
