@@ -4,12 +4,15 @@ import { UserService } from 'src/user/user.service';
 import { ValidationOtpGatewayInterface } from './gateways/validation-otp-bd/validation-otp-gateway-interface';
 import { ChangePassword } from './dto/new-password.dto';
 import * as moment from 'moment';
+import { ValidationOtpGatewayEmailInterface } from './gateways/validation-otp-email/validation-otp-gateway-email-interface';
 
 @Injectable()
 export class ValidationOtpService {
     constructor(
         @Inject('ValidationOtpGatewayBD')
         private validationOtpGateway: ValidationOtpGatewayInterface,
+        @Inject('ValidationOtpGatewayEmail')
+        private validationOtpGatewayEmail: ValidationOtpGatewayEmailInterface,
         private userService: UserService
     ){}
     
@@ -21,7 +24,8 @@ export class ValidationOtpService {
         const baseToIntOtp = Math.pow(10, maxIntPlace);
         const otp = Math.floor(Math.random() * baseToIntOtp);
 
-        await this.validationOtpGateway.generate(otp, user.id)
+        await this.validationOtpGateway.generate(otp, user.id);
+        await this.validationOtpGatewayEmail.send(email, otp);
     }
 
     async verifyOtp(otp: number){
