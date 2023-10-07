@@ -16,20 +16,22 @@ model User {
   password      String
   email         String         @unique
   tasks         Task[]
-  discipline Discipline[]
+  discipline    Discipline[]
   Pomodoro      Pomodoro[]
   ValidationOtp ValidationOtp?
 }
 
 model Task {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  dateWishEnd DateTime  @db.Date
-  dateEnd     DateTime? @db.Date
-  userId      Int
-  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  subTasks    SubTask[]
+  id           Int         @id @default(autoincrement())
+  name         String
+  description  String
+  dateWishEnd  DateTime    @db.Date
+  dateEnd      DateTime?   @db.Date
+  userId       Int
+  disciplineId Int?
+  discipline   Discipline? @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  user         User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subTasks     SubTask[]
 }
 
 model SubTask {
@@ -50,6 +52,7 @@ model Discipline {
   userId      Int
   user        User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   activity    Activity[]
+  task        Task[]
 }
 
 model Activity {

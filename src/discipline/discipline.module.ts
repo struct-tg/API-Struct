@@ -19,5 +19,6 @@ import { DisciplineGatewayPrisma } from './gateways/discipline-bd/discipline-gat
       useExisting: DisciplineGatewayPrisma
     }
   ],
+  exports: [DisciplineService]
 })
 export class DisciplineModule {}
