@@ -25,9 +25,9 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskCreated;
     }
 
-    async count(idUser: number, status: string, partialName: string): Promise<number>{
+    async count(idUser: number, status: string, partialName: string, disciplineId: number): Promise<number>{
 
-        const filter = this.genereateFilter(idUser, status, partialName);
+        const filter = this.genereateFilter(idUser, status, partialName, disciplineId);
 
         const count = await this.prisma.task.count({
             where: filter
@@ -36,9 +36,9 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return count
     }
 
-    async findAll(idUser: number, status: string, partialName: string, ascend: boolean): Promise<Task[]> {
+    async findAll(idUser: number, status: string, partialName: string, ascend: boolean, disciplineId: number): Promise<Task[]> {
 
-        const filter = this.genereateFilter(idUser, status, partialName);
+        const filter = this.genereateFilter(idUser, status, partialName, disciplineId);
         const order = this.generateOrder(ascend);
 
         const taskList = await this.prisma.task.findMany({
@@ -49,9 +49,9 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return taskList;
     }
 
-    async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, ascend: boolean): Promise<Task[]>{
+    async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, ascend: boolean, disciplineId: number): Promise<Task[]>{
     
-        const filter = this.genereateFilter(idUser, status, partialName);    
+        const filter = this.genereateFilter(idUser, status, partialName, disciplineId);    
         const order = this.generateOrder(ascend);
 
         const taskList = await this.prisma.task.findMany({
@@ -110,7 +110,7 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         })
     }
 
-    private genereateFilter(idUser: number, status?: string, partialName?: string){
+    private genereateFilter(idUser: number, status?: string, partialName?: string, disciplineId?: number){
         let filter: any = {}
         filter = { userId: idUser}
 
@@ -146,6 +146,12 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
                 name: {
                     contains: partialName
                   }
+            })
+        }
+
+        if(disciplineId){
+            Object.assign(filter, {
+                disciplineId
             })
         }
         
