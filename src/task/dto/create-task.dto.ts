@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsNotEmpty, IsOptional, IsString, MinLength, ValidateNested } from "class-validator";
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength, ValidateNested } from "class-validator";
 import { CreateSubtaskDto } from "src/subtask/dto/create-subtask.dto";
 
 export class CreateTaskDto {
@@ -18,11 +18,14 @@ export class CreateTaskDto {
     @IsDateString({}, {message: `dateWishEnd deve ser uma data válida`})
     dateWishEnd: Date;
 
-
     @IsOptional({message: `subTasks deve ser um array`})
     @Type(() => CreateSubtaskDto)
     @ValidateNested({each: true})
     subTasks: CreateSubtaskDto[];
+
+    @IsOptional()
+    @IsNumber({}, {message: `disciplineId deve ser um número`})
+    disciplineId: number;
 
     userId: number;
 }

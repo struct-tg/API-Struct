@@ -5,11 +5,13 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { TaskGatewayPrisma } from './gateways/task-bd/task-gateway-prisma';
 import { UserModule } from 'src/user/user.module';
 import { SubtaskModule } from 'src/subtask/subtask.module';
+import { DisciplineModule } from 'src/discipline/discipline.module';
 
 @Module({
   imports: [
     PrismaModule,
-    SubtaskModule
+    SubtaskModule,
+    DisciplineModule
   ],
   controllers: [TaskController],
   providers: [
