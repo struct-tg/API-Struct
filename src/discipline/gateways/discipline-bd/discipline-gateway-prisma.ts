@@ -2,13 +2,10 @@ import { Discipline, StatusDiscipline, Task } from "@prisma/client";
 import { Injectable } from "@nestjs/common";
 
 import { CreateDisciplineDto } from "src/discipline/dto/create-discipline.dto";
+import { UpdateDisciplineDto } from "src/discipline/dto/update-discipline.dto";
 import { DisciplineGatewayInterface } from "./discipline-gateway-interface";
 import { PrismaService } from "src/prisma/prisma.service";
 
-// import { Discipline } from "src/discipline/entities/discipline.entity";
-// import { DisciplineController } from "src/discipline/discipline.controller";
-// import { UpdateDisciplineDto } from "src/discipline/dto/update-discipline.dto";
-// import { disciplineStatus } from "src/discipline/enums/discipline-filter-status";
 
 @Injectable()
 export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
@@ -42,11 +39,10 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
     async findAll(idUser: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]> {
 
         const filter = this.genereateFilter(idUser, status, partialName);
-        const order = this.generateOrder(ascend);
 
         const disciplineList = await this.prisma.discipline.findMany({
             where: filter,
-            orderBy: order
+            // orderBy: order
         })
 
         return disciplineList;
@@ -55,11 +51,10 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
     async findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]>{
     
         const filter = this.genereateFilter(idUser, status, partialName);    
-        const order = this.generateOrder(ascend);
 
         const disciplineList = await this.prisma.discipline.findMany({
             where: filter,
-            orderBy: order,
+            // orderBy: order,
             skip: page * limit,
             take: limit
         })
@@ -80,30 +75,19 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         return discipline;
     }
 
-    // async update(id: number, updateTaskDto: UpdateTaskDto): Promise<Task>{
+    async update(id: number, updateDisciplineDto: UpdateDisciplineDto): Promise<Discipline>{
 
-    //     const { subTasks, ...onlyTask} = updateTaskDto;
+        const { activity, ...onlyDiscipline } = updateDisciplineDto;
 
-    //     const task = await this.prisma.task.update({
-    //         data: onlyTask,
-    //         where: {
-    //             id
-    //         }
-    //     })
+        const discipline = await this.prisma.discipline.update({
+            data: onlyDiscipline,
+            where: {
+                id
+            }
+        })
 
-    //     return task;
-    // }
-
-    // async onOff(id: number, dateEnd: Date): Promise<void>{
-    //     await this.prisma.task.update({
-    //         data: {
-    //             dateEnd
-    //         },
-    //         where: {
-    //             id
-    //         }
-    //     })
-    // }
+        return discipline;
+    }
 
     async remove(id: number): Promise<void>{
         await this.prisma.discipline.delete({
@@ -115,24 +99,18 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
 
     private genereateFilter(idUser: number, status?: string, partialName?: string){
         let filter: any = {}
-        filter = { userId: idUser}
-
-        const now = new Date();
-
-        now.setUTCHours(now.getUTCHours() - now.getTimezoneOffset() / 60);
-        now.setUTCHours(0, 0, 0, 0);       
+        filter = { userId: idUser}      
 
         switch(status){
             case StatusDiscipline.APPROVED:
-                Object.assign(filter, {NOT: {
-                    dateEnd: null,
-                  }})
+                Object.assign(filter, {
+                    status: StatusDiscipline.APPROVED
+                })
                 break;
             case StatusDiscipline.DISAPPROVED:
-                Object.assign(filter, {dateEnd: null,
-                    dateWishEnd: {
-                        gte: now
-                    }})
+                Object.assign(filter, { 
+                    status: StatusDiscipline.DISAPPROVED
+                })
                 break;
             default:
                 break;
@@ -147,19 +125,5 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         }
         
         return filter;
-    }
-
-    private generateOrder(ascend: boolean){
-        const order = ascend ? "asc" : "desc";
-        const orderList: any[] = [
-            {
-                dateWishEnd: order
-            },
-            {
-                name: "asc"
-            }
-        ]
-
-        return orderList;
     }
 }

@@ -1,5 +1,5 @@
 import { CreateDisciplineDto } from "src/discipline/dto/create-discipline.dto";
-// import { UpdateDisciplineDto } from "src/discipline/dto/update-discipline.dto";
+import { UpdateDisciplineDto } from "src/discipline/dto/update-discipline.dto";
 import { Discipline } from "src/discipline/entities/discipline.entity";
 
 export interface DisciplineGatewayInterface{
@@ -8,7 +8,6 @@ export interface DisciplineGatewayInterface{
     findAll(idUser: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]>;
     findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]>;
     findById(id: number): Promise<Discipline>; 
-    // update(id: number, updateDisciplineDto: UpdateDisciplineDto): Promise<Discipline>; 
-    // onOff(id: number, dateEnd: Date): Promise<void>; 
+    update(id: number, updateDisciplineDto: UpdateDisciplineDto): Promise<Discipline>; 
     remove(id: number): Promise<void>;
 }
