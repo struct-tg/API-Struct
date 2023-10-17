@@ -18,10 +18,7 @@ export class DisciplineService {
   async create(idUserLog: number, createDisciplineDto: CreateDisciplineDto) {
     createDisciplineDto.userId = idUserLog
 
-    const disciplineCreated = await this.disciplineGateway.create(createDisciplineDto);
-
-    await this.activityService.create(createDisciplineDto.activity, disciplineCreated.id);
-    return disciplineCreated
+    return this.disciplineGateway.create(createDisciplineDto);
   }
 
   async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, ascend = false) {

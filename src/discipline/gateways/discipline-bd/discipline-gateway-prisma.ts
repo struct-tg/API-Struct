@@ -42,7 +42,6 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
 
         const disciplineList = await this.prisma.discipline.findMany({
             where: filter,
-            // orderBy: order
         })
 
         return disciplineList;
@@ -54,7 +53,6 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
 
         const disciplineList = await this.prisma.discipline.findMany({
             where: filter,
-            // orderBy: order,
             skip: page * limit,
             take: limit
         })

@@ -12,7 +12,7 @@ import { ActivityService } from './activity.service';
     ActivityService,
     ActivityGatewayPrisma,
     {
-      provide: 'ActivityGatewayBd',
+      provide: 'ActivityGatewayBD',
       useExisting: ActivityGatewayPrisma
     }
   ],

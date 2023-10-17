@@ -1,11 +1,13 @@
 import {
     IsDateString,
+    IsEnum,
     IsNotEmpty,
     IsNumber,
     IsOptional,
     IsString,
     MinLength 
 } from "class-validator";
+import { TypeActivity } from "../enums/activity-type";
 
 export class CreateActivityDto {
     @IsOptional()
@@ -16,13 +18,17 @@ export class CreateActivityDto {
     @IsDateString({}, {message: `date deve ser uma data válida`})
     date: Date;
    
-    @IsOptional()
+    @IsNotEmpty({message: `note não pode ser vazio`})
     @IsNumber({maxDecimalPlaces: 2}, {message: 'note deve ser um número'})
     note: number;
     
     @IsOptional()
     @IsNumber({maxDecimalPlaces: 2}, {message: 'weight deve ser um número'})
     weight: number;
+
+    @IsNotEmpty({message: 'TypeActivity não pode ser vazio'})
+    @IsEnum(TypeActivity)
+    typeAc: TypeActivity;
 
     @IsOptional()
     @IsString({message: `comment deve ser uma string`})

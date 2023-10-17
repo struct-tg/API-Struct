@@ -57,7 +57,8 @@ model Activity {
   description  String?
   date         DateTime
   note         Float      @default(0) //COLOAR DEFAULT 0 OBRIGATÓRIO
-  weight       Float? //SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
+  weight       Float?                //SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
+  typeAc       TypeActivity
   comment      String?
   name         String
   disciplineId Int
@@ -92,4 +93,10 @@ enum StatusDiscipline {
 enum TypeAverageDiscipline {
   SIMPLE
   WEIGHTED
+}
+
+enum TypeActivity {
+  ACTIVITY
+  EXAMINATION
+  WORK
 }

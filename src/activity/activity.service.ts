@@ -1,26 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+
+import { ActivityGatewayInterface } from './gateways/activity-bd/activity-gateway-interface';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { Activity } from './entities/activity.entity';
+import { Pagination } from 'src/utils/pagination';
 
 @Injectable()
 export class ActivityService {
-  create(createActivityDto: CreateActivityDto[], disciplineId: number) {
-    return 'This action adds a new activity';
+  constructor(
+    @Inject("ActivityGatewayBD")
+    private activityGateway: ActivityGatewayInterface
+  ) { }
+
+  async create(disciplineId: number, createActivityDto: CreateActivityDto) {
+    createActivityDto.disciplineId = disciplineId;
+
+    return await this.activityGateway.create(createActivityDto);    
   }
 
-  findAll() {
-    return `This action returns all activity`;
+  async findAll(disciplineId: number, tipeAc: string, page?: number, limit?: number, partialName?: string) {
+    if (typeof (page) === 'number' && typeof (limit) === 'number') {
+
+      if (page < 1)
+        throw new BadRequestException(`O page deve ser um número positivo`);
+
+      if (limit < 1)
+        throw new BadRequestException(`O limit deve ser um número positivo`);
+
+      const count = await this.activityGateway.count(disciplineId, partialName, tipeAc);
+      const date = await this.activityGateway.findAllWithPagination(disciplineId, (page - 1), limit, partialName, tipeAc);
+
+      return new Pagination<Activity>(date, page, limit, count);
+    }
+    else {
+      const date = await this.activityGateway.findAll(disciplineId, partialName, tipeAc);
+
+      return new Pagination<Activity>(date, 1, date.length, date.length);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} activity`;
+  async update(disciplineId: number, id: number, updateActivityDto: UpdateActivityDto) {
+    await this.findOne(disciplineId, id);
+
+    const activityUpdated = await this.activityGateway.update(id, updateActivityDto);
+
+    return activityUpdated;
   }
 
-  update(id: number, updateActivityDto: UpdateActivityDto) {
-    return `This action updates a #${id} activity`;
+  async remove(disciplineId: number, id: number) {
+    await this.findOne(disciplineId, id);
+
+    await this.activityGateway.remove(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} activity`;
+  async findOne(disciplineId: number, id: number) {
+    const activity = await this.activityGateway.findById(id);
+
+    if (!activity || activity.disciplineId !== disciplineId)
+      throw new NotFoundException(`activity de id ${id} não encontrado`);
+
+    return activity;
   }
 }
