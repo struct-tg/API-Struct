@@ -1,5 +1,4 @@
 import { CreateTaskDto } from "src/task/dto/create-task.dto";
-import { ResumeResponseDto } from "src/task/dto/resume-response.dto";
 import { UpdateTaskDto } from "src/task/dto/update-task.dto";
 import { Task } from "src/task/entities/task.entity";
 

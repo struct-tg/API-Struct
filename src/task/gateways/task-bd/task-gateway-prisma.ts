@@ -3,10 +3,8 @@ import { TaskGatewayInterface } from "./task-gateway-interface";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateTaskDto } from "src/task/dto/create-task.dto";
 import { Task } from "src/task/entities/task.entity";
-import { TaskController } from "src/task/task.controller";
 import { UpdateTaskDto } from "src/task/dto/update-task.dto";
 import { TaskStatus } from "src/task/enums/task-filter-status";
-import { ResumeResponseDto } from "src/task/dto/resume-response.dto";
 
 @Injectable()
 export class TaskGatewayPrisma implements TaskGatewayInterface{
