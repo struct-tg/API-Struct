@@ -89,6 +89,14 @@ export class TaskController {
   }
 
   @UseGuards(JwtGuard)
+  @Get('resume')
+  getResume(
+    @Req() req: any,
+  ) {
+    return this.taskService.getResume(req.user.id);
+  }
+
+  @UseGuards(JwtGuard)
   @Get(':id')
   findOne(
     @Req() req: any,
