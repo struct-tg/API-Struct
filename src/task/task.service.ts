@@ -7,6 +7,8 @@ import { Task } from './entities/task.entity';
 import { Pagination } from 'src/utils/pagination';
 import { SubTaskService } from 'src/subtask/subtask.service';
 import { DisciplineService } from 'src/discipline/discipline.service';
+import { TaskStatus } from './enums/task-filter-status';
+import { ResumeResponseDto } from './dto/resume-response.dto';
 
 @Injectable()
 export class TaskService {
@@ -98,6 +100,25 @@ export class TaskService {
     await this.findOne(idUserLog, id);
 
     await this.taskGateway.remove(id);
+  }
+
+  async getResume(idUserLog: number){
+
+    const listResume: ResumeResponseDto[] = [] as ResumeResponseDto[];
+
+    const arrayLabels = Object.values(TaskStatus);
+    const totalTasks = await this.taskGateway.count(idUserLog, null, null, null)
+
+    arrayLabels.shift();
+    
+    for(const label of arrayLabels){
+      const totalByLabel = await this.taskGateway.count(idUserLog, label, null, null);
+      const percent = totalByLabel / totalTasks;  
+      const resume = new ResumeResponseDto(label, percent);
+      listResume.push(resume);
+    }
+
+    return listResume;
   }
 
   private validateDate(dateWishEndInput: Date){

@@ -32,6 +32,8 @@ export class ValidationOtpGatewayEmailNodemailer implements ValidationOtpGateway
         try{
             await this.transporter.sendMail(mailOptions);
         } catch (erro) {
+            console.log(erro);
+            
             throw new BadRequestException(`Falha ao enviar o e-mail`);
         }
     }
