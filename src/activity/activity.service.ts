@@ -12,7 +12,7 @@ export class ActivityService {
   constructor(
     @Inject("ActivityGatewayBD")
     private activityGateway: ActivityGatewayInterface,
-    // private disciplineService: DisciplineService
+    private disciplineService: DisciplineService
   ) { }
 
   async create(createActivityDto: CreateActivityDto) {
@@ -23,7 +23,7 @@ export class ActivityService {
   async findAll(idUserLog: number, disciplineId: number, tipeAc: string, page?: number, limit?: number, partialName?: string) {
     if (typeof (page) === 'number' && typeof (limit) === 'number') {
 
-      // await this.disciplineService.findOne(idUserLog, disciplineId); 
+      await this.disciplineService.findOne(idUserLog, disciplineId); 
 
       if (page < 1)
         throw new BadRequestException(`O page deve ser um número positivo`);

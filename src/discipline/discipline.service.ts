@@ -4,7 +4,6 @@ import { Discipline } from '@prisma/client';
 import { DisciplineGatewayInterface } from './gateways/discipline-bd/discipline-gateway-interface';
 import { CreateDisciplineDto } from './dto/create-discipline.dto';
 import { UpdateDisciplineDto } from './dto/update-discipline.dto';
-import { ActivityService } from 'src/activity/activity.service';
 import { Pagination } from 'src/utils/pagination';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class DisciplineService {
   constructor(
     @Inject("DisciplineGatewayBD")
     private disciplineGateway: DisciplineGatewayInterface,
-    private activityService: ActivityService
   ) { }
 
   async create(idUserLog: number, createDisciplineDto: CreateDisciplineDto) {

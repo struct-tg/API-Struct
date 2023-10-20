@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 
 import { DisciplineModule } from 'src/discipline/discipline.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -9,7 +9,7 @@ import { ActivityGatewayPrisma } from './gateways/activity-bd/activity-gateway-p
 @Module({
   imports: [
     PrismaModule,
-    // DisciplineModule
+    DisciplineModule,
   ],
   controllers: [ActivityController],
   providers: [
@@ -18,8 +18,7 @@ import { ActivityGatewayPrisma } from './gateways/activity-bd/activity-gateway-p
     {
       provide: 'ActivityGatewayBD',
       useExisting: ActivityGatewayPrisma
-    }
-  ],
-  exports: [ActivityService]
+    },
+  ]
 })
 export class ActivityModule {}
