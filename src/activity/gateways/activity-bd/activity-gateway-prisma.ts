@@ -1,10 +1,11 @@
-import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { ActivityGatewayInterface } from "./activity-gateway-interface";
 import { Activity } from "@prisma/client";
+
 import { CreateActivityDto } from "src/activity/dto/create-activity.dto";
-import { TypeActivity } from "src/activity/enums/activity-type";
 import { UpdateActivityDto } from "src/activity/dto/update-activity.dto";
+import { ActivityGatewayInterface } from "./activity-gateway-interface";
+import { TypeActivity } from "src/activity/enums/activity-type";
+import { PrismaService } from "src/prisma/prisma.service";
 
 
 @Injectable()
@@ -21,9 +22,9 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         return activityCreated;
     }
 
-    async count(activity: number, partialName: string, tipeAc: string): Promise<number>{
+    async count(disciplineId: number, partialName: string, tipeAc: string): Promise<number>{
 
-        const filter = this.genereateFilter(activity, partialName, tipeAc);
+        const filter = this.genereateFilter(disciplineId, partialName, tipeAc);
 
         const count = await this.prisma.task.count({
             where: filter
@@ -32,9 +33,9 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         return count
     }
 
-    async findAll(activity: number, partialName: string, tipeAc: string): Promise<Activity[]> {
+    async findAll(disciplineId: number, partialName: string, tipeAc: string): Promise<Activity[]> {
 
-        const filter = this.genereateFilter(activity, partialName, tipeAc);
+        const filter = this.genereateFilter(disciplineId, partialName, tipeAc);
 
         const activityList = await this.prisma.activity.findMany({
             where: filter,
@@ -43,9 +44,9 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         return activityList;
     }
 
-    async findAllWithPagination(activity: number, page: number, limit: number, partialName: string, tipeAc: string): Promise<Activity[]>{
+    async findAllWithPagination(disciplineId: number, page: number, limit: number, partialName: string, tipeAc: string): Promise<Activity[]>{
     
-        const filter = this.genereateFilter(activity, partialName, tipeAc);    
+        const filter = this.genereateFilter(disciplineId, partialName, tipeAc);    
 
         const activityList = await this.prisma.activity.findMany({
             where: filter,
@@ -57,6 +58,16 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
     }
 
     async findById(id: number): Promise<Activity> {
+        const activity = await this.prisma.activity.findUnique({
+          where: {
+            id
+          }
+        })
+  
+        return activity;
+    }
+    
+    async findByDiciplineId(id: number): Promise<Activity> {
         const activity = await this.prisma.activity.findUnique({
           where: {
             id
@@ -85,24 +96,24 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         })
     }
 
-    private genereateFilter(disciplineId: number, status?: string, partialName?: string){
+    private genereateFilter(disciplineId: number, partialName?: string, tipeAc?: string){
         let filter: any = {}
-        filter = { userId: disciplineId}      
+        filter = { disciplineId: disciplineId}      
 
-        switch(status){
+        switch(tipeAc){
             case TypeActivity.ACTIVITY:
                 Object.assign(filter, {
-                    status: TypeActivity.ACTIVITY
+                    tipeAc: TypeActivity.ACTIVITY
                 })
                 break;
             case TypeActivity.EXAMINATION:
                 Object.assign(filter, { 
-                    status: TypeActivity.EXAMINATION
+                    tipeAc: TypeActivity.EXAMINATION
                 })
                 break;
             case TypeActivity.WORK:
                 Object.assign(filter, { 
-                    status: TypeActivity.WORK
+                    tipeAc: TypeActivity.WORK
                 })
                 break;
             default:

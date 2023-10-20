@@ -25,14 +25,21 @@ export class ActivityController {
   
   @UseGuards(JwtGuard)
   @Post()
-  create(@Req() req: any, @Body() createActivityDto: CreateActivityDto) {
-    return this.activityService.create(req.disciplineId.id, createActivityDto);
+  create( 
+    @Body() createActivityDto: CreateActivityDto) {
+    return this.activityService.create(createActivityDto);
   }
 
   @UseGuards(JwtGuard)
-  @Get()
+  @Get('findAll/:disciplineId')
   findAll(
     @Req() req: any,
+    @Param(
+      'disciplineId',
+      new ParseIntPipe({
+        exceptionFactory: () => new NotAcceptableException("O disciplineId tem que ser numérico")
+      })) 
+      disciplineId: number,
 
     @Query(
       'tipeAc',
@@ -68,25 +75,31 @@ export class ActivityController {
     @Query('partialName')
     partialName?: string,
   ) {
-    return this.activityService.findAll(req.disciplineId.id, tipeAc, page, limit, partialName);
+    return this.activityService.findAll(req.user.id, disciplineId, tipeAc, page, limit, partialName);
   }
 
   @UseGuards(JwtGuard)
-  @Get(':id')
-  findOne(@Req() req: any, @Param(
-    'id',
-    new ParseIntPipe({
-      exceptionFactory: () => new NotAcceptableException("O id tem que ser numérico")
-    }))
-  id: number
+  @Get(':disciplineId/:id')
+  findOne(
+    @Param(
+      'disciplineId',
+      new ParseIntPipe({
+        exceptionFactory: () => new NotAcceptableException("O disciplineId tem que ser numérico")
+      })) 
+      disciplineId: number,
+    @Param(
+      'id',
+      new ParseIntPipe({
+        exceptionFactory: () => new NotAcceptableException("O id tem que ser numérico")
+      }))
+    id: number
   ) {
-    return this.activityService.findOne(req.disciplineId.id, id);
+    return this.activityService.findOne(disciplineId, id);
   }
 
   @UseGuards(JwtGuard)
   @Put(':id')
   update(
-    @Req() req: any,
     @Param(
       'id',
       new ParseIntPipe({
@@ -94,16 +107,24 @@ export class ActivityController {
       })) id: number, 
     @Body() updateActivityDto: UpdateActivityDto
     ) {
-      return this.activityService.update(req.disciplineId.id, id, updateActivityDto);
+      return this.activityService.update(id, updateActivityDto);
   }
 
   @UseGuards(JwtGuard)
-  @Delete(':id')
-  remove(@Req() req: any, @Param(
+  @Delete(':disciplineId/:id')
+  remove(
+    @Param(
+    'disciplineId',
+    new ParseIntPipe({
+      exceptionFactory: () => new NotAcceptableException("O disciplineId tem que ser numérico")
+    })) 
+    disciplineId: number,
+    @Param(
     'id',
     new ParseIntPipe({
       exceptionFactory: () => new NotAcceptableException("O id tem que ser numérico")
-    })) id: number) {
-    return this.activityService.remove(req.disciplineId.id, id);
+    })) 
+    id: number) {
+    return this.activityService.remove(disciplineId, id);
   }
 }

@@ -5,22 +5,25 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Activity } from './entities/activity.entity';
 import { Pagination } from 'src/utils/pagination';
+import { DisciplineService } from 'src/discipline/discipline.service';
 
 @Injectable()
 export class ActivityService {
   constructor(
     @Inject("ActivityGatewayBD")
-    private activityGateway: ActivityGatewayInterface
+    private activityGateway: ActivityGatewayInterface,
+    // private disciplineService: DisciplineService
   ) { }
 
-  async create(disciplineId: number, createActivityDto: CreateActivityDto) {
-    createActivityDto.disciplineId = disciplineId;
-
+  async create(createActivityDto: CreateActivityDto) {
+    createActivityDto.date = new Date(createActivityDto.date)
     return await this.activityGateway.create(createActivityDto);    
   }
 
-  async findAll(disciplineId: number, tipeAc: string, page?: number, limit?: number, partialName?: string) {
+  async findAll(idUserLog: number, disciplineId: number, tipeAc: string, page?: number, limit?: number, partialName?: string) {
     if (typeof (page) === 'number' && typeof (limit) === 'number') {
+
+      // await this.disciplineService.findOne(idUserLog, disciplineId); 
 
       if (page < 1)
         throw new BadRequestException(`O page deve ser um número positivo`);
@@ -40,8 +43,9 @@ export class ActivityService {
     }
   }
 
-  async update(disciplineId: number, id: number, updateActivityDto: UpdateActivityDto) {
-    await this.findOne(disciplineId, id);
+  async update(id: number, updateActivityDto: UpdateActivityDto) {
+    updateActivityDto.date = new Date(updateActivityDto.date)
+    await this.findOne(updateActivityDto.disciplineId, id);
 
     const activityUpdated = await this.activityGateway.update(id, updateActivityDto);
 

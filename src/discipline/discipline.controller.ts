@@ -78,7 +78,9 @@ export class DisciplineController {
 
   @UseGuards(JwtGuard)
   @Get(':id')
-  findOne(@Req() req: any, @Param(
+  findOne(
+    @Req() req: any, 
+    @Param(
     'id',
     new ParseIntPipe({
       exceptionFactory: () => new NotAcceptableException("O id tem que ser numérico")
