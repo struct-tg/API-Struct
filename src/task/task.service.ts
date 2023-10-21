@@ -6,13 +6,17 @@ import * as moment from 'moment';
 import { Task } from './entities/task.entity';
 import { Pagination } from 'src/utils/pagination';
 import { SubTaskService } from 'src/subtask/subtask.service';
+import { DisciplineService } from 'src/discipline/discipline.service';
+import { TaskStatus } from './enums/task-filter-status';
+import { ResumeResponseDto } from './dto/resume-response.dto';
 
 @Injectable()
 export class TaskService {
   constructor(
     @Inject("TaskGatewayBD")
     private taskGateway: TaskGatewayInterface,
-    private subTaskService: SubTaskService
+    private subTaskService: SubTaskService,
+    private disciplineService: DisciplineService
   ){}
   
   async create(idUserLog: number, createTaskDto: CreateTaskDto) {
@@ -21,13 +25,17 @@ export class TaskService {
     createTaskDto.dateWishEnd = new Date(createTaskDto.dateWishEnd)
     createTaskDto.userId = idUserLog
 
+    if(createTaskDto.disciplineId){
+      await this.disciplineService.findOne(idUserLog, createTaskDto.disciplineId)
+    }
+
     const taskCreated = await this.taskGateway.create(createTaskDto);
 
     await this.subTaskService.create(createTaskDto.subTasks, taskCreated.id);
     return taskCreated
   }
 
-  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, ascend = false) {
+  async findAll(idUser: number, page?: number, limit?: number, status?: string, partialName?: string, ascend = false, disciplineId?: number) {
     
     if(typeof(page) === 'number' && typeof(limit) === 'number' ){
 
@@ -37,13 +45,13 @@ export class TaskService {
       if(limit < 1)
         throw new BadRequestException(`Limit deve ser positivo`)
 
-      const count = await this.taskGateway.count(idUser, status, partialName);
-      const data = await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, ascend);
+      const count = await this.taskGateway.count(idUser, status, partialName, disciplineId);
+      const data = await this.taskGateway.findAllWithPagination(idUser, (page - 1), limit, status, partialName, ascend, disciplineId);
       
       return new Pagination<Task>(data, page, limit, count);
     }
     else{
-      const data = await this.taskGateway.findAll(idUser, status, partialName, ascend);
+      const data = await this.taskGateway.findAll(idUser, status, partialName, ascend, disciplineId);
 
       return new Pagination<Task>(data, 1, data.length, data.length);
     }
@@ -92,6 +100,25 @@ export class TaskService {
     await this.findOne(idUserLog, id);
 
     await this.taskGateway.remove(id);
+  }
+
+  async getResume(idUserLog: number){
+
+    const listResume: ResumeResponseDto[] = [] as ResumeResponseDto[];
+
+    const arrayLabels = Object.values(TaskStatus);
+    const totalTasks = await this.taskGateway.count(idUserLog, null, null, null)
+
+    arrayLabels.shift();
+    
+    for(const label of arrayLabels){
+      const totalByLabel = await this.taskGateway.count(idUserLog, label, null, null);
+      const percent = totalByLabel / totalTasks;  
+      const resume = new ResumeResponseDto(label, percent);
+      listResume.push(resume);
+    }
+
+    return listResume;
   }
 
   private validateDate(dateWishEndInput: Date){

@@ -58,4 +58,15 @@ export class UserGatewayPrisma implements UserGatewayInterface{
       
       return userUpdated;
     }
+
+    async changePassword(id: number, newPassword: string): Promise<void> {
+      await this.prisma.user.update({
+        where: {
+          id
+        },
+        data: {
+          password: newPassword
+        }
+      })
+    }
 }

@@ -88,6 +88,11 @@ export class UserService {
     await this.userGateway.delete(id);
   }
 
+  async changePassword(newPassword: string, id: number){
+    newPassword = this.generatePasswordCrypt(newPassword);
+    await this.userGateway.changePassword(id, newPassword);
+  }
+
   private async getOneUser(id: number){
     const user = await this.userGateway.findById(id);
 

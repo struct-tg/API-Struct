@@ -74,9 +74,26 @@ export class TaskController {
         optional: true
       })
     )
-    ascend?: boolean
+    ascend?: boolean,
+    @Query(
+      'disciplineId',
+      new ParseIntPipe({
+        exceptionFactory: () =>
+          new NotAcceptableException(`O disciplineId tem que ser numérico`),
+        optional: true
+      }),
+    )
+    disciplineId?: number
   ) {
-    return this.taskService.findAll(req.user.id, page, limit, status, partialName, ascend);
+    return this.taskService.findAll(req.user.id, page, limit, status, partialName, ascend, disciplineId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('resume')
+  getResume(
+    @Req() req: any,
+  ) {
+    return this.taskService.getResume(req.user.id);
   }
 
   @UseGuards(JwtGuard)
