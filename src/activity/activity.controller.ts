@@ -42,15 +42,15 @@ export class ActivityController {
       disciplineId: number,
 
     @Query(
-      'tipeAc',
+      'typeAc',
       new ParseEnumPipe(TypeActivity, {
         exceptionFactory: () =>
-          new NotAcceptableException(`tipeActivity do filtro inválido`),
+          new NotAcceptableException(`typeActivity do filtro inválido`),
         optional: true
       }
       )
     )
-    tipeAc: string,
+    typeAc: string,
 
     @Query(
       'page',
@@ -75,7 +75,7 @@ export class ActivityController {
     @Query('partialName')
     partialName?: string,
   ) {
-    return this.activityService.findAll(req.user.id, disciplineId, tipeAc, page, limit, partialName);
+    return this.activityService.findAll(req.user.id, disciplineId, typeAc, page, limit, partialName);
   }
 
   @UseGuards(JwtGuard)

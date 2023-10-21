@@ -22,20 +22,20 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         return activityCreated;
     }
 
-    async count(disciplineId: number, partialName: string, tipeAc: string): Promise<number>{
+    async count(disciplineId: number, typeAc: string, partialName: string): Promise<number>{
 
-        const filter = this.genereateFilter(disciplineId, partialName, tipeAc);
+        const filter = this.genereateFilter(disciplineId, typeAc, partialName);
 
-        const count = await this.prisma.task.count({
+        const count = await this.prisma.activity.count({
             where: filter
         })
 
         return count
     }
 
-    async findAll(disciplineId: number, partialName: string, tipeAc: string): Promise<Activity[]> {
+    async findAll(disciplineId: number, typeAc: string, partialName: string): Promise<Activity[]> {
 
-        const filter = this.genereateFilter(disciplineId, partialName, tipeAc);
+        const filter = this.genereateFilter(disciplineId, typeAc, partialName);
 
         const activityList = await this.prisma.activity.findMany({
             where: filter,
@@ -44,9 +44,9 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         return activityList;
     }
 
-    async findAllWithPagination(disciplineId: number, page: number, limit: number, partialName: string, tipeAc: string): Promise<Activity[]>{
+    async findAllWithPagination(disciplineId: number, page: number, limit: number, typeAc: string, partialName: string): Promise<Activity[]>{
     
-        const filter = this.genereateFilter(disciplineId, partialName, tipeAc);    
+        const filter = this.genereateFilter(disciplineId, typeAc, partialName);    
 
         const activityList = await this.prisma.activity.findMany({
             where: filter,
@@ -96,24 +96,24 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         })
     }
 
-    private genereateFilter(disciplineId: number, partialName?: string, tipeAc?: string){
+    private genereateFilter(disciplineId: number, typeAc: string, partialName?: string){
         let filter: any = {}
         filter = { disciplineId: disciplineId}      
 
-        switch(tipeAc){
+        switch(typeAc){
             case TypeActivity.ACTIVITY:
                 Object.assign(filter, {
-                    tipeAc: TypeActivity.ACTIVITY
+                    typeAc: TypeActivity.ACTIVITY
                 })
                 break;
             case TypeActivity.EXAMINATION:
                 Object.assign(filter, { 
-                    tipeAc: TypeActivity.EXAMINATION
+                    typeAc: TypeActivity.EXAMINATION
                 })
                 break;
             case TypeActivity.WORK:
                 Object.assign(filter, { 
-                    tipeAc: TypeActivity.WORK
+                    typeAc: TypeActivity.WORK
                 })
                 break;
             default:
