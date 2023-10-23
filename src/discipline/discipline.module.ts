@@ -7,8 +7,7 @@ import { DisciplineGatewayPrisma } from './gateways/discipline-bd/discipline-gat
 
 @Module({
   imports: [
-    PrismaModule,
-    ActivityModule
+    PrismaModule
   ],
   controllers: [DisciplineController],
   providers: [
@@ -17,7 +16,7 @@ import { DisciplineGatewayPrisma } from './gateways/discipline-bd/discipline-gat
     {
       provide: 'DisciplineGatewayBD',
       useExisting: DisciplineGatewayPrisma
-    }
+    },
   ],
   exports: [DisciplineService]
 })
