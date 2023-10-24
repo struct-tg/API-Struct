@@ -25,9 +25,10 @@ export class ActivityController {
   
   @UseGuards(JwtGuard)
   @Post()
-  create( 
+  create(
+    @Req() req: any,
     @Body() createActivityDto: CreateActivityDto) {
-    return this.activityService.create(createActivityDto);
+    return this.activityService.create(req.user.id, createActivityDto);
   }
 
   @UseGuards(JwtGuard)

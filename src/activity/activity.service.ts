@@ -15,7 +15,9 @@ export class ActivityService {
     private disciplineService: DisciplineService
   ) { }
 
-  async create(createActivityDto: CreateActivityDto) {
+  async create(idUserLog: number, createActivityDto: CreateActivityDto) {
+    await this.disciplineService.findOne(idUserLog, createActivityDto.disciplineId,); 
+
     createActivityDto.date = new Date(createActivityDto.date)
     return await this.activityGateway.create(createActivityDto);    
   }
@@ -23,7 +25,7 @@ export class ActivityService {
   async findAll(idUserLog: number, disciplineId: number, typeAc: string, page?: number, limit?: number, partialName?: string) {
     if (typeof (page) === 'number' && typeof (limit) === 'number') {
 
-      await this.disciplineService.findOne(disciplineId, idUserLog); 
+      await this.disciplineService.findOne(idUserLog, disciplineId); 
 
       if (page < 1)
         throw new BadRequestException(`O page deve ser um número positivo`);
@@ -45,7 +47,7 @@ export class ActivityService {
 
   async update(id: number, updateActivityDto: UpdateActivityDto) {
     updateActivityDto.date = new Date(updateActivityDto.date)
-    await this.findOne(updateActivityDto.disciplineId, id);
+    await this.findOne(updateActivityDto.disciplineId, id); //
 
     const activityUpdated = await this.activityGateway.update(id, updateActivityDto);
 
@@ -53,7 +55,7 @@ export class ActivityService {
   }
 
   async remove(disciplineId: number, id: number) {
-    await this.findOne(disciplineId, id);
+    await this.findOne(disciplineId, id); //
 
     await this.activityGateway.remove(id);
   }
