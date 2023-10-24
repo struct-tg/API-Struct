@@ -9,4 +9,5 @@ export class Discipline {
   name: string;
   userId: number;
   activity?: Activity[];
+  dateEnd: Date;
 }
