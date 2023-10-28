@@ -45,7 +45,6 @@ model SubTask {
 model Discipline {
   id          Int                   @id @default(autoincrement())
   nameTeacher String
-  status      StatusDiscipline      @default(DISAPPROVED)
   typeAv      TypeAverageDiscipline
   note        Float?
   noteMin     Float
@@ -88,11 +87,6 @@ model ValidationOtp {
   updated DateTime @updatedAt
   userId  Int      @unique
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-enum StatusDiscipline {
-  APPROVED
-  DISAPPROVED
 }
 
 enum TypeAverageDiscipline {

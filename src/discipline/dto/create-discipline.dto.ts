@@ -17,10 +17,6 @@ export class CreateDisciplineDto {
     @IsString({message: 'nameTeacher deve ser uma string'})
     @MinLength(3, {message: `nameTeacher deve ter um tamanho maior ou igual a 3 caracteres`})
     nameTeacher: string;
-
-    @IsOptional()
-    @IsEnum(StatusDiscipline)
-    status: StatusDiscipline;
     
     @IsNotEmpty({message: 'typeAverageDiscipline não pode ser vazio'})
     @IsEnum(TypeAverageDiscipline)
