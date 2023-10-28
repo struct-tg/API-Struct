@@ -30,7 +30,7 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
 
         const filter = this.genereateFilter(idUser, status, partialName);
 
-        const count = await this.prisma.task.count({
+        const count = await this.prisma.discipline.count({
             where: filter
         })
 
