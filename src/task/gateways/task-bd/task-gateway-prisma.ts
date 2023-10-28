@@ -119,18 +119,18 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         now.setUTCHours(0, 0, 0, 0);       
 
         switch(status){
-            case TaskStatus.CONCLUIDO:
+            case TaskStatus.COMPLETED:
                 Object.assign(filter, {NOT: {
                     dateEnd: null,
                   }})
                 break;
-            case TaskStatus.NAO_CONCLUIDO:
+            case TaskStatus.NOTCOMPLETED:
                 Object.assign(filter, {dateEnd: null,
                     dateWishEnd: {
                         gte: now
                     }})
                 break;
-            case TaskStatus.ATRASADO:
+            case TaskStatus.LATE:
                 Object.assign(filter, {dateEnd: null,
                     dateWishEnd: {
                         lt: now
