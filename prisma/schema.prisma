@@ -45,27 +45,28 @@ model SubTask {
 model Discipline {
   id          Int                   @id @default(autoincrement())
   nameTeacher String
-  status      StatusDiscipline      @default(DISAPPROVED)
   typeAv      TypeAverageDiscipline
+  note        Float?
   noteMin     Float
   name        String
   userId      Int
   user        User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   activity    Activity[]
   task        Task[]
+  dateEnd     DateTime?             @db.Date
 }
 
 model Activity {
-  id           Int        @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   description  String?
   date         DateTime
-  note         Float      @default(0) //COLOAR DEFAULT 0 OBRIGATÓRIO
-  weight       Float?                //SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
+  note         Float?
+  weight       Float       @default(1)//SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
   typeAc       TypeActivity
   comment      String?
   name         String
   disciplineId Int
-  discipline   Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  discipline   Discipline   @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
 }
 
 model Pomodoro {
@@ -86,11 +87,6 @@ model ValidationOtp {
   updated DateTime @updatedAt
   userId  Int      @unique
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-enum StatusDiscipline {
-  APPROVED
-  DISAPPROVED
 }
 
 enum TypeAverageDiscipline {

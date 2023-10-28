@@ -1,4 +1,5 @@
 export enum StatusDiscipline {
     APPROVED = "APPROVED",
-    DISAPPROVED = "DISAPPROVED"
+    DISAPPROVED = "DISAPPROVED",
+    STUDYING = "STUDYING"
 }

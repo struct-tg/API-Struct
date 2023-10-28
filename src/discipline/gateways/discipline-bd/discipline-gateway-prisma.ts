@@ -1,10 +1,11 @@
-import { Discipline, StatusDiscipline, Task } from "@prisma/client";
+import { Discipline } from "@prisma/client";
 import { Injectable } from "@nestjs/common";
 
 import { CreateDisciplineDto } from "src/discipline/dto/create-discipline.dto";
 import { UpdateDisciplineDto } from "src/discipline/dto/update-discipline.dto";
 import { DisciplineGatewayInterface } from "./discipline-gateway-interface";
 import { PrismaService } from "src/prisma/prisma.service";
+import { StatusDiscipline } from "src/discipline/enums/discipline-filter-status";
 
 
 @Injectable()
@@ -39,7 +40,7 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
     async findAll(idUser: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]> {
 
         const filter = this.genereateFilter(idUser, status, partialName);
-
+        
         const disciplineList = await this.prisma.discipline.findMany({
             where: filter,
         })
@@ -95,19 +96,55 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         })
     }
 
+    async updateNote(id: number, note: number): Promise<void>{
+        await this.prisma.discipline.update({
+            data: {
+                note
+            },
+            where: {
+                id
+            }
+        });
+    }
+
+    async off(id: number): Promise<void>{   
+        await this.prisma.discipline.update({
+            data: {
+                dateEnd: new Date()
+            },
+            where: {
+                id
+            }
+        })
+    }
+
+
     private genereateFilter(idUser: number, status?: string, partialName?: string){
         let filter: any = {}
         filter = { userId: idUser}      
 
         switch(status){
             case StatusDiscipline.APPROVED:
-                Object.assign(filter, {
-                    status: StatusDiscipline.APPROVED
+                Object.assign(filter, {NOT: {
+                    dateEnd: null,
+                  },
+                  note: {
+                    gte: this.prisma.discipline.fields.noteMin
+                  }
                 })
                 break;
             case StatusDiscipline.DISAPPROVED:
-                Object.assign(filter, { 
-                    status: StatusDiscipline.DISAPPROVED
+                Object.assign(filter, {NOT: {
+                    dateEnd: null,
+                  },
+                  note: {
+                    lt: this.prisma.discipline.fields.noteMin
+                  }
+                })
+                break;
+            case StatusDiscipline.STUDYING: 
+                Object.assign(filter, {
+                    dateEnd: null
                 })
                 break;
             default:

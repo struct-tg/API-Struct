@@ -33,7 +33,7 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         return count
     }
 
-    async findAll(disciplineId: number, typeAc: string, partialName: string): Promise<Activity[]> {
+    async findAll(disciplineId: number, typeAc?: string, partialName?: string): Promise<Activity[]> {
 
         const filter = this.genereateFilter(disciplineId, typeAc, partialName);
 
@@ -96,7 +96,7 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         })
     }
 
-    private genereateFilter(disciplineId: number, typeAc: string, partialName?: string){
+    private genereateFilter(disciplineId: number, typeAc?: string, partialName?: string){
         let filter: any = {}
         filter = { disciplineId: disciplineId}      
 
