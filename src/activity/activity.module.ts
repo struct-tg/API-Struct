@@ -9,7 +9,7 @@ import { ActivityGatewayPrisma } from './gateways/activity-bd/activity-gateway-p
 @Module({
   imports: [
     PrismaModule,
-    DisciplineModule,
+    forwardRef(() => DisciplineModule)
   ],
   controllers: [ActivityController],
   providers: [
@@ -19,6 +19,7 @@ import { ActivityGatewayPrisma } from './gateways/activity-bd/activity-gateway-p
       provide: 'ActivityGatewayBD',
       useExisting: ActivityGatewayPrisma
     },
-  ]
+  ],
+  exports: [ActivityService]
 })
 export class ActivityModule {}

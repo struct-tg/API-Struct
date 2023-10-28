@@ -15,7 +15,6 @@ import { ValidationOtpModule } from './validation-otp/validation-otp.module';
     UserModule,
     AuthModule,
     TaskModule,
-    DisciplineModule,
     ActivityModule,
     PomodoroModule,
     ValidationOtpModule

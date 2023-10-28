@@ -8,6 +8,7 @@ export interface DisciplineGatewayInterface{
     findAll(idUser: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]>;
     findAllWithPagination(idUser: number, page: number, limit: number, status: string, partialName: string, ascend: boolean): Promise<Discipline[]>;
     findById(id: number): Promise<Discipline>; 
-    update(id: number, updateDisciplineDto: UpdateDisciplineDto): Promise<Discipline>; 
+    update(id: number, updateDisciplineDto: UpdateDisciplineDto): Promise<Discipline>;
+    updateNote(id: number, note: number): Promise<void>;
     remove(id: number): Promise<void>;
 }

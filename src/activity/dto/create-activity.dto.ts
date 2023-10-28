@@ -18,7 +18,7 @@ export class CreateActivityDto {
     @IsDateString({}, {message: `date deve ser uma data válida`})
     date: Date;
    
-    @IsNotEmpty({message: `note não pode ser vazio`})
+    @IsOptional()
     @IsNumber({maxDecimalPlaces: 2}, {message: 'note deve ser um número'})
     note: number;
     

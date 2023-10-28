@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 
 import { ActivityGatewayInterface } from './gateways/activity-bd/activity-gateway-interface';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -12,17 +12,22 @@ export class ActivityService {
   constructor(
     @Inject("ActivityGatewayBD")
     private activityGateway: ActivityGatewayInterface,
+    @Inject(forwardRef(() => DisciplineService))
     private disciplineService: DisciplineService
   ) { }
 
   async create(idUserLog: number, createActivityDto: CreateActivityDto) {
-    await this.disciplineService.findOne(idUserLog, createActivityDto.disciplineId,); 
+    await this.disciplineService.findOne(idUserLog, createActivityDto.disciplineId); 
 
-    createActivityDto.date = new Date(createActivityDto.date)
-    return await this.activityGateway.create(createActivityDto);    
+    createActivityDto.date = new Date(createActivityDto.date);
+
+    const newActivity = await this.activityGateway.create(createActivityDto);    
+    await this.disciplineService.calcNoteByDisciplineId(idUserLog, newActivity.disciplineId);
+
+    return newActivity;
   }
 
-  async findAll(idUserLog: number, disciplineId: number, typeAc: string, page?: number, limit?: number, partialName?: string) {
+  async findAll(idUserLog: number, disciplineId: number, typeAc?: string, page?: number, limit?: number, partialName?: string) {
     if (typeof (page) === 'number' && typeof (limit) === 'number') {
 
       await this.disciplineService.findOne(idUserLog, disciplineId); 
@@ -45,19 +50,23 @@ export class ActivityService {
     }
   }
 
-  async update(id: number, updateActivityDto: UpdateActivityDto) {
+  async update(idUserLog: number, id: number, updateActivityDto: UpdateActivityDto) {
     updateActivityDto.date = new Date(updateActivityDto.date)
     await this.findOne(updateActivityDto.disciplineId, id); //
 
     const activityUpdated = await this.activityGateway.update(id, updateActivityDto);
 
+    await this.disciplineService.calcNoteByDisciplineId(idUserLog, updateActivityDto.disciplineId);
+
     return activityUpdated;
   }
 
-  async remove(disciplineId: number, id: number) {
-    await this.findOne(disciplineId, id); //
+  async remove(idUserLog: number, disciplineId: number, id: number) {
+    await this.findOne(disciplineId, id);
 
     await this.activityGateway.remove(id);
+
+    await this.disciplineService.calcNoteByDisciplineId(idUserLog, disciplineId);
   }
 
   async findOne(disciplineId: number, id: number) {

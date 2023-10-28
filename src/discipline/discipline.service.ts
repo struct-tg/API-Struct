@@ -5,12 +5,14 @@ import { DisciplineGatewayInterface } from './gateways/discipline-bd/discipline-
 import { CreateDisciplineDto } from './dto/create-discipline.dto';
 import { UpdateDisciplineDto } from './dto/update-discipline.dto';
 import { Pagination } from 'src/utils/pagination';
+import { ActivityService } from 'src/activity/activity.service';
 
 @Injectable()
 export class DisciplineService {
   constructor(
     @Inject("DisciplineGatewayBD")
     private disciplineGateway: DisciplineGatewayInterface,
+    private activityService: ActivityService
   ) { }
 
   async create(idUserLog: number, createDisciplineDto: CreateDisciplineDto) {
@@ -61,5 +63,25 @@ export class DisciplineService {
       throw new NotFoundException(`discipline de id ${id} não encontrado`)
 
     return discipline
+  }
+
+  async calcNoteByDisciplineId(idUserLog: number, disciplineId: number){
+    const listPaginationActivity = await this.activityService.findAll(idUserLog, disciplineId);
+    let listActivity = listPaginationActivity.data;
+
+    listActivity = listActivity.filter(activity => activity.note !== null)
+
+    const acumulatorNote = listActivity.reduce((acumulator, current) => {
+      return acumulator + current.note * current.weight;
+    }, 0)
+
+    const acumulatorWeight = listActivity.reduce((acumulator, current) => {
+      return acumulator + current.weight;
+    }, 0)
+
+    const currentNote = acumulatorNote / acumulatorWeight;
+    
+
+    await this.disciplineGateway.updateNote(disciplineId, currentNote)
   }
 }

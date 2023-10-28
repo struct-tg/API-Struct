@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { DisciplineService } from './discipline.service';
 import { DisciplineController } from './discipline.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -7,7 +7,8 @@ import { DisciplineGatewayPrisma } from './gateways/discipline-bd/discipline-gat
 
 @Module({
   imports: [
-    PrismaModule
+    PrismaModule,
+    forwardRef(() => ActivityModule)
   ],
   controllers: [DisciplineController],
   providers: [

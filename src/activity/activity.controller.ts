@@ -101,6 +101,7 @@ export class ActivityController {
   @UseGuards(JwtGuard)
   @Put(':id')
   update(
+    @Req() req: any,
     @Param(
       'id',
       new ParseIntPipe({
@@ -108,12 +109,13 @@ export class ActivityController {
       })) id: number, 
     @Body() updateActivityDto: UpdateActivityDto
     ) {
-      return this.activityService.update(id, updateActivityDto);
+      return this.activityService.update(req.user.id, id, updateActivityDto);
   }
 
   @UseGuards(JwtGuard)
   @Delete(':disciplineId/:id')
   remove(
+    @Req() req: any,
     @Param(
     'disciplineId',
     new ParseIntPipe({
@@ -126,6 +128,6 @@ export class ActivityController {
       exceptionFactory: () => new NotAcceptableException("O id tem que ser numérico")
     })) 
     id: number) {
-    return this.activityService.remove(disciplineId, id);
+    return this.activityService.remove(req.user.id, disciplineId, id);
   }
 }

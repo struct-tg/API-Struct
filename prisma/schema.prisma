@@ -47,6 +47,7 @@ model Discipline {
   nameTeacher String
   status      StatusDiscipline      @default(DISAPPROVED)
   typeAv      TypeAverageDiscipline
+  note        Float?
   noteMin     Float
   name        String
   userId      Int
@@ -60,8 +61,8 @@ model Activity {
   id           Int          @id @default(autoincrement())
   description  String?
   date         DateTime
-  note         Float        @default(0) //COLOAR DEFAULT 0 OBRIGATÓRIO
-  weight       Float? //SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
+  note         Float?
+  weight       Float       @default(1)//SE FOR MÉDIA SIMPLES SERÁ DESCONSIDERADO
   typeAc       TypeActivity
   comment      String?
   name         String
