@@ -10,5 +10,6 @@ export interface DisciplineGatewayInterface{
     findById(id: number): Promise<Discipline>; 
     update(id: number, updateDisciplineDto: UpdateDisciplineDto): Promise<Discipline>;
     updateNote(id: number, note: number): Promise<void>;
+    off(id: number): Promise<void>; 
     remove(id: number): Promise<void>;
 }

@@ -65,6 +65,12 @@ export class DisciplineService {
     return discipline
   }
 
+  async off(idUserLog: number, idDiscipline: number){
+    await this.findOne(idUserLog, idDiscipline);
+    await this.disciplineGateway.off(idDiscipline);
+
+  }
+
   async calcNoteByDisciplineId(idUserLog: number, disciplineId: number){
     const listPaginationActivity = await this.activityService.findAll(idUserLog, disciplineId);
     let listActivity = listPaginationActivity.data;

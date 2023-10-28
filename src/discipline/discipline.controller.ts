@@ -12,7 +12,10 @@ import {
   UseGuards,
   Query,
   ParseEnumPipe,
-  ParseBoolPipe
+  ParseBoolPipe,
+  Patch,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { DisciplineService } from './discipline.service';
 import { CreateDisciplineDto } from './dto/create-discipline.dto';
@@ -102,6 +105,23 @@ export class DisciplineController {
     @Body() updateDisciplineDto: UpdateDisciplineDto
     ) {
       return this.disciplineService.update(req.user.id, id, updateDisciplineDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('off/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  onOff(
+    @Req() req: any,
+    @Param(
+      'id',
+      new ParseIntPipe({
+        exceptionFactory: () =>
+          new NotAcceptableException(`O id tem que ser numérico`),
+      }),
+    )
+    idDiscipline: number,
+  ) {
+    return this.disciplineService.off(req.user.id, idDiscipline);
   }
 
   @UseGuards(JwtGuard)

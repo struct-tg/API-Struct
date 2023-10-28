@@ -106,6 +106,18 @@ export class DisciplineGatewayPrisma implements DisciplineGatewayInterface{
         });
     }
 
+    async off(id: number): Promise<void>{   
+        await this.prisma.discipline.update({
+            data: {
+                dateEnd: new Date()
+            },
+            where: {
+                id
+            }
+        })
+    }
+
+
     private genereateFilter(idUser: number, status?: string, partialName?: string){
         let filter: any = {}
         filter = { userId: idUser}      
