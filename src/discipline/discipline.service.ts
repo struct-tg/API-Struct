@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Discipline } from '@prisma/client';
 
 import { DisciplineGatewayInterface } from './gateways/discipline-bd/discipline-gateway-interface';
@@ -43,7 +43,10 @@ export class DisciplineService {
   }
 
   async update(idUserLog: number, id: number, updateDisciplineDto: UpdateDisciplineDto) {
-    await this.findOne(idUserLog, id);
+    const discipline = await this.findOne(idUserLog, id);
+
+    if(discipline.dateEnd)
+      throw new ForbiddenException(`Disciplina finalizada`);
 
     const disciplineUpdated = await this.disciplineGateway.update(id, updateDisciplineDto);
 

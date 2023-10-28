@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef, ForbiddenException } from '@nestjs/common';
 
 import { ActivityGatewayInterface } from './gateways/activity-bd/activity-gateway-interface';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -17,7 +17,10 @@ export class ActivityService {
   ) { }
 
   async create(idUserLog: number, createActivityDto: CreateActivityDto) {
-    await this.disciplineService.findOne(idUserLog, createActivityDto.disciplineId); 
+    const discipline = await this.disciplineService.findOne(idUserLog, createActivityDto.disciplineId);
+
+    if(discipline.dateEnd)
+      throw new ForbiddenException(`Disciplina finalizada`);
 
     createActivityDto.date = new Date(createActivityDto.date);
 
@@ -51,6 +54,12 @@ export class ActivityService {
   }
 
   async update(idUserLog: number, id: number, updateActivityDto: UpdateActivityDto) {
+
+    const discipline = await this.disciplineService.findOne(idUserLog, updateActivityDto.disciplineId);
+
+    if(discipline.dateEnd)
+      throw new ForbiddenException(`Disciplina finalizada`);
+
     updateActivityDto.date = new Date(updateActivityDto.date)
     await this.findOne(updateActivityDto.disciplineId, id); //
 
@@ -62,6 +71,13 @@ export class ActivityService {
   }
 
   async remove(idUserLog: number, disciplineId: number, id: number) {
+
+    const discipline = await this.disciplineService.findOne(idUserLog, disciplineId);
+
+    if(discipline.dateEnd)
+      throw new ForbiddenException(`Disciplina finalizada`);
+    
+
     await this.findOne(disciplineId, id);
 
     await this.activityGateway.remove(id);
