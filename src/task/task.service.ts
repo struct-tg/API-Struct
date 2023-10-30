@@ -107,9 +107,7 @@ export class TaskService {
     const listResume: ResumeResponseDto[] = [] as ResumeResponseDto[];
 
     const arrayLabels = Object.values(TaskStatus);
-    const totalTasks = await this.taskGateway.count(idUserLog, null, null, null)
-
-    arrayLabels.shift();
+    const totalTasks = await this.taskGateway.count(idUserLog, null, null, null);
     
     for(const label of arrayLabels){
       const totalByLabel = await this.taskGateway.count(idUserLog, label, null, null);
