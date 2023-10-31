@@ -35,6 +35,20 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return count
     }
 
+    async countResumeByDates(idUser: number, status?: string, dateStart?: Date, dateEndInput?: Date): Promise<number>{
+        
+        const count = await this.prisma.task.count({
+            where: {
+                userId: idUser,
+                dateEnd: {
+                    gte: dateStart
+                }
+            }
+        })
+
+        return count;
+    }
+
     async findAll(idUser: number, status: string, partialName: string, ascend: boolean, disciplineId: number): Promise<Task[]> {
 
         const filter = this.genereateFilter(idUser, status, partialName, disciplineId);
@@ -156,6 +170,46 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         
         return filter;
     }
+
+    // private genereateFilterCountResume(idUser: number, status?: string, dateStart?: Date, dateEnd?: Date){
+    //     let filter: any = {}
+    //     filter = { userId: idUser}
+
+    //     const now = new Date();
+
+    //     now.setUTCHours(now.getUTCHours() - now.getTimezoneOffset() / 60);
+    //     now.setUTCHours(0, 0, 0, 0);     
+
+    //     switch(status){
+    //         case TaskStatus.COMPLETED:
+    //             Object.assign(filter, {NOT: {
+    //                 dateEnd: null,
+    //               }})
+    //             break;
+    //         case TaskStatus.NOTCOMPLETED:
+    //             Object.assign(filter, {dateEnd: null,
+    //                 dateWishEnd: {
+    //                     gte: now
+    //                 }})
+    //             break;
+    //         case TaskStatus.LATE:
+    //             Object.assign(filter, {dateEnd: null,
+    //                 dateWishEnd: {
+    //                     lt: now
+    //                 }})
+    //             break;
+    //         default:
+    //             break;
+    //     }
+  
+    //     if(dateStart){
+    //         Object.assign(filter, {
+    //             dateEnd: 
+    //         })
+    //     }
+        
+    //     return filter;
+    // }
 
     private generateOrder(ascend: boolean){
         const order = ascend ? "asc" : "desc";
