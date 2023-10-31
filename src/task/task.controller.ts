@@ -92,8 +92,12 @@ export class TaskController {
   @Get('resume')
   getResume(
     @Req() req: any,
+    @Query('dateStart')
+    dateStartString: string,
+    @Query('dateEnd')
+    dateEndString: string
   ) {
-    return this.taskService.getResume(req.user.id);
+    return this.taskService.getResume(req.user.id, dateStartString, dateEndString);
   }
 
   @UseGuards(JwtGuard)

@@ -102,15 +102,18 @@ export class TaskService {
     await this.taskGateway.remove(id);
   }
 
-  async getResume(idUserLog: number){
+  async getResume(idUserLog: number, dateStartString: string, daterEndString: string){
 
     const listResume: ResumeResponseDto[] = [] as ResumeResponseDto[];
 
+    const dateStart = moment(dateStartString).toDate();
+    const dateEnd = moment(daterEndString).toDate();
+
     const arrayLabels = Object.values(TaskStatus);
-    const totalTasks = await this.taskGateway.count(idUserLog, null, null, null);
+    const totalTasks = await this.taskGateway.countResumeByDates(idUserLog, dateStart, dateEnd);
     
     for(const label of arrayLabels){
-      const totalByLabel = await this.taskGateway.count(idUserLog, label, null, null);
+      const totalByLabel = await this.taskGateway.countResumeByDates(idUserLog, dateStart, dateEnd, label);
       const percent = totalByLabel / totalTasks;  
       const resume = new ResumeResponseDto(label, percent);
       listResume.push(resume);

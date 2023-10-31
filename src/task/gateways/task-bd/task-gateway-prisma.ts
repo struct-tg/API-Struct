@@ -35,15 +35,12 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return count
     }
 
-    async countResumeByDates(idUser: number, status?: string, dateStart?: Date, dateEndInput?: Date): Promise<number>{
+    async countResumeByDates(idUser: number, dateStart?: Date, dateEndInput?: Date, status?: string): Promise<number>{
         
+        const filter = this.genereateFilterCountResume(idUser, status, dateStart, dateEndInput);
+
         const count = await this.prisma.task.count({
-            where: {
-                userId: idUser,
-                dateEnd: {
-                    gte: dateStart
-                }
-            }
+            where: filter
         })
 
         return count;
@@ -171,45 +168,61 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return filter;
     }
 
-    // private genereateFilterCountResume(idUser: number, status?: string, dateStart?: Date, dateEnd?: Date){
-    //     let filter: any = {}
-    //     filter = { userId: idUser}
+    private genereateFilterCountResume(idUser: number, status?: string, dateStart?: Date, dateEnd?: Date){
+        let filter: any = {}
+        filter = { userId: idUser}
 
-    //     const now = new Date();
+        const now = new Date();
 
-    //     now.setUTCHours(now.getUTCHours() - now.getTimezoneOffset() / 60);
-    //     now.setUTCHours(0, 0, 0, 0);     
-
-    //     switch(status){
-    //         case TaskStatus.COMPLETED:
-    //             Object.assign(filter, {NOT: {
-    //                 dateEnd: null,
-    //               }})
-    //             break;
-    //         case TaskStatus.NOTCOMPLETED:
-    //             Object.assign(filter, {dateEnd: null,
-    //                 dateWishEnd: {
-    //                     gte: now
-    //                 }})
-    //             break;
-    //         case TaskStatus.LATE:
-    //             Object.assign(filter, {dateEnd: null,
-    //                 dateWishEnd: {
-    //                     lt: now
-    //                 }})
-    //             break;
-    //         default:
-    //             break;
-    //     }
-  
-    //     if(dateStart){
-    //         Object.assign(filter, {
-    //             dateEnd: 
-    //         })
-    //     }
+        now.setUTCHours(now.getUTCHours() - now.getTimezoneOffset() / 60);
+        now.setUTCHours(0, 0, 0, 0);
         
-    //     return filter;
-    // }
+        if(!dateStart){
+            dateStart = new Date(now);
+            dateStart.setMonth(now.getMonth() -1);
+        }
+
+        if(!dateEnd)
+            dateEnd = now;
+
+        Object.assign(filter, {
+            OR: [
+                {
+                    dateEnd: {
+                        gte: dateStart,
+                        lte: dateEnd
+                    }
+                },
+                {
+                    dateEnd: null
+                }
+            ]
+        })
+
+        switch(status){
+            case TaskStatus.COMPLETED:
+                Object.assign(filter, {NOT: {
+                    dateEnd: null,
+                  }})
+                break;
+            case TaskStatus.NOTCOMPLETED:
+                Object.assign(filter, {dateEnd: null,
+                    dateWishEnd: {
+                        gte: now
+                    }})
+                break;
+            case TaskStatus.LATE:
+                Object.assign(filter, {dateEnd: null,
+                    dateWishEnd: {
+                        lt: now
+                    }})
+                break;
+            default:
+                break;
+        }
+        
+        return filter;
+    }
 
     private generateOrder(ascend: boolean){
         const order = ascend ? "asc" : "desc";
