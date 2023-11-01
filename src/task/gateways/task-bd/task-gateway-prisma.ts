@@ -35,6 +35,17 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
         return count
     }
 
+    async countResumeByDates(idUser: number, dateStart?: Date, dateEndInput?: Date, status?: string): Promise<number>{
+        
+        const filter = this.genereateFilterCountResume(idUser, status, dateStart, dateEndInput);
+
+        const count = await this.prisma.task.count({
+            where: filter
+        })
+
+        return count;
+    }
+
     async findAll(idUser: number, status: string, partialName: string, ascend: boolean, disciplineId: number): Promise<Task[]> {
 
         const filter = this.genereateFilter(idUser, status, partialName, disciplineId);
@@ -152,6 +163,62 @@ export class TaskGatewayPrisma implements TaskGatewayInterface{
             Object.assign(filter, {
                 disciplineId
             })
+        }
+        
+        return filter;
+    }
+
+    private genereateFilterCountResume(idUser: number, status?: string, dateStart?: Date, dateEnd?: Date){
+        let filter: any = {}
+        filter = { userId: idUser}
+
+        const now = new Date();
+
+        now.setUTCHours(now.getUTCHours() - now.getTimezoneOffset() / 60);
+        now.setUTCHours(0, 0, 0, 0);
+        
+        if(!dateStart){
+            dateStart = new Date(now);
+            dateStart.setMonth(now.getMonth() -1);
+        }
+
+        if(!dateEnd)
+            dateEnd = now;
+
+        Object.assign(filter, {
+            OR: [
+                {
+                    dateEnd: {
+                        gte: dateStart,
+                        lte: dateEnd
+                    }
+                },
+                {
+                    dateEnd: null
+                }
+            ]
+        })
+
+        switch(status){
+            case TaskStatus.COMPLETED:
+                Object.assign(filter, {NOT: {
+                    dateEnd: null,
+                  }})
+                break;
+            case TaskStatus.NOTCOMPLETED:
+                Object.assign(filter, {dateEnd: null,
+                    dateWishEnd: {
+                        gte: now
+                    }})
+                break;
+            case TaskStatus.LATE:
+                Object.assign(filter, {dateEnd: null,
+                    dateWishEnd: {
+                        lt: now
+                    }})
+                break;
+            default:
+                break;
         }
         
         return filter;

@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, ForbiddenException, NotAcceptableException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskGatewayInterface } from './gateways/task-bd/task-gateway-interface';
@@ -102,17 +102,26 @@ export class TaskService {
     await this.taskGateway.remove(id);
   }
 
-  async getResume(idUserLog: number){
+  async getResume(idUserLog: number, dateStartString: string, daterEndString: string){
 
     const listResume: ResumeResponseDto[] = [] as ResumeResponseDto[];
 
-    const arrayLabels = Object.values(TaskStatus);
-    const totalTasks = await this.taskGateway.count(idUserLog, null, null, null)
+    const regexDate = /^\d{4}-\d{2}-\d{2}$/;
 
-    arrayLabels.shift();
+    if(!regexDate.test(dateStartString))
+      throw new NotAcceptableException(`dateStart tem que estar no formato ISO 8601 (YYYY-MM-DD)`);
+
+    if(!regexDate.test(daterEndString))
+      throw new NotAcceptableException(`dateEnd tem que estar no formato ISO 8601 (YYYY-MM-DD)`);
+
+    const dateStart = moment(dateStartString).toDate();
+    const dateEnd = moment(daterEndString).toDate();
+
+    const arrayLabels = Object.values(TaskStatus);
+    const totalTasks = await this.taskGateway.countResumeByDates(idUserLog, dateStart, dateEnd);
     
     for(const label of arrayLabels){
-      const totalByLabel = await this.taskGateway.count(idUserLog, label, null, null);
+      const totalByLabel = await this.taskGateway.countResumeByDates(idUserLog, dateStart, dateEnd, label);
       const percent = totalByLabel / totalTasks;  
       const resume = new ResumeResponseDto(label, percent);
       listResume.push(resume);
