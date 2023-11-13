@@ -30,7 +30,7 @@ export class ActivityService {
     return newActivity;
   }
 
-  async findAll(idUserLog: number, disciplineId: number, typeAc?: string, page?: number, limit?: number, partialName?: string) {
+  async findAll(idUserLog: number, disciplineId: number, typeAc?: string, page?: number, limit?: number, partialName?: string,  ascend?: boolean) {
     if (typeof (page) === 'number' && typeof (limit) === 'number') {
 
       await this.disciplineService.findOne(idUserLog, disciplineId); 
@@ -42,12 +42,12 @@ export class ActivityService {
         throw new BadRequestException(`O limit deve ser um número positivo`);
 
       const count = await this.activityGateway.count(disciplineId, typeAc, partialName);
-      const date = await this.activityGateway.findAllWithPagination(disciplineId, (page - 1), limit, typeAc, partialName);
+      const date = await this.activityGateway.findAllWithPagination(disciplineId, (page - 1), limit, typeAc, partialName, ascend);
 
       return new Pagination<Activity>(date, page, limit, count);
     }
     else {
-      const date = await this.activityGateway.findAll(disciplineId, typeAc, partialName);
+      const date = await this.activityGateway.findAll(disciplineId, typeAc, partialName, ascend);
 
       return new Pagination<Activity>(date, 1, date.length, date.length);
     }

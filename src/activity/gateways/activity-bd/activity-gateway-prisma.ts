@@ -33,23 +33,27 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         return count
     }
 
-    async findAll(disciplineId: number, typeAc?: string, partialName?: string): Promise<Activity[]> {
+    async findAll(disciplineId: number, typeAc?: string, partialName?: string, ascend?: boolean): Promise<Activity[]> {
 
         const filter = this.genereateFilter(disciplineId, typeAc, partialName);
-
+        const order = this.generateOrder(ascend);
+        
         const activityList = await this.prisma.activity.findMany({
             where: filter,
+            orderBy: order
         })
 
         return activityList;
     }
 
-    async findAllWithPagination(disciplineId: number, page: number, limit: number, typeAc: string, partialName: string): Promise<Activity[]>{
+    async findAllWithPagination(disciplineId: number, page: number, limit: number, typeAc: string, partialName: string, ascend?: boolean): Promise<Activity[]>{
     
         const filter = this.genereateFilter(disciplineId, typeAc, partialName);    
+        const order = this.generateOrder(ascend);
 
         const activityList = await this.prisma.activity.findMany({
             where: filter,
+            orderBy: order,
             skip: page * limit,
             take: limit
         })
@@ -129,5 +133,19 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
         }
         
         return filter;
+    }
+
+    private generateOrder(ascend: boolean){
+        const order = ascend ? "desc" : "asc";
+        const orderList: any[] = [
+            {
+                date: order
+            },
+            {
+                name: "asc"
+            }
+        ]
+
+        return orderList;
     }
 }

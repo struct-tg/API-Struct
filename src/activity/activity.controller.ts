@@ -11,7 +11,8 @@ import {
   Put,
   UseGuards,
   Query,
-  ParseEnumPipe
+  ParseEnumPipe,
+  ParseBoolPipe
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -75,8 +76,17 @@ export class ActivityController {
     
     @Query('partialName')
     partialName?: string,
+    @Query(
+      'orderAscend',
+      new ParseBoolPipe({
+        exceptionFactory: () =>
+          new NotAcceptableException(`A ordenação ascendente (antigo para o recente) deve ser um booleano. Se false será descendente (do recente para o antigo)`),
+        optional: true
+      })
+    )
+    ascend = false,
   ) {
-    return this.activityService.findAll(req.user.id, disciplineId, typeAc, page, limit, partialName);
+    return this.activityService.findAll(req.user.id, disciplineId, typeAc, page, limit, partialName, ascend);
   }
 
   @UseGuards(JwtGuard)
