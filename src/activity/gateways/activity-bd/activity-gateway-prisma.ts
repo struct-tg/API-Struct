@@ -136,7 +136,7 @@ export class ActivityGatewayPrisma implements ActivityGatewayInterface{
     }
 
     private generateOrder(ascend: boolean){
-        const order = ascend ? "desc" : "asc";
+        const order = ascend ? "asc" : "desc";
         const orderList: any[] = [
             {
                 date: order

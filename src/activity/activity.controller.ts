@@ -84,7 +84,7 @@ export class ActivityController {
         optional: true
       })
     )
-    ascend = false,
+    ascend = true,
   ) {
     return this.activityService.findAll(req.user.id, disciplineId, typeAc, page, limit, partialName, ascend);
   }
