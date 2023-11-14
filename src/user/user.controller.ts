@@ -3,40 +3,55 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
+  UseGuards,
+  Req,
+  HttpStatus,
+  HttpCode,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LogAuth } from './dto/log-auth.dto';
+import { JwtGuard } from 'src/guards/auth/jwt.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Post('/auth')
+  auth(@Body() logAuth: LogAuth) {
+    return this.userService.logAuth(logAuth);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @UseGuards(JwtGuard)
+  @Get('')
+  @UseInterceptors(ClassSerializerInterceptor)
+  myAccount(@Req() req: any) {
+    return this.userService.findOne(req.user.id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseGuards(JwtGuard)
+  @Put('')
+  @UseInterceptors(ClassSerializerInterceptor)
+  update(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(req.user.id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @UseGuards(JwtGuard)
+  @Delete('')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Req() req: any) {
+    return this.userService.remove(req.user.id);
   }
 }
